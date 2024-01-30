@@ -33,3 +33,4 @@ $RECYCLE.BIN/
 *.userosscache
 *.sln.docstates
 obj/
+Debug/
