@@ -32,3 +32,4 @@ $RECYCLE.BIN/
 *.suo
 *.userosscache
 *.sln.docstates
+obj/
