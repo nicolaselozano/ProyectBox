@@ -1,31 +1,14 @@
-using ApplicationDb.Models;
-using Microsoft.EntityFrameworkCore;
-
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddJsonFile("appsettings.json");
-var configuration = builder.Configuration;
-Console.WriteLine("a");
-builder.Services.AddControllers();
-builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+public class Program
 {
-    var connectionString = configuration.GetConnectionString("DefaultConnection");
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args).Build().Run();
+    }
 
-    opt.UseNpgsql(connectionString);
-});
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
-
-app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
-app.Run();
