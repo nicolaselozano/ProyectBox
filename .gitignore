@@ -1,6 +1,7 @@
-# .NET
+# Ignorar carpetas de salida
 bin/
 obj/
+
 
 # User-specific files
 *.suo
