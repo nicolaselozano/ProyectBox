@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -15,11 +15,11 @@ namespace API_Portafolio.Migrations
                 name: "Proyects",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "varchar", nullable: false),
                     Url = table.Column<string>(type: "varchar", nullable: false),
-                    Image = table.Column<string>(type: "varchar", nullable: false)
+                    Image = table.Column<string>(type: "varchar", nullable: false),
+                    Role = table.Column<string>(type: "varchar", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,8 +30,7 @@ namespace API_Portafolio.Migrations
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false)
@@ -42,40 +41,40 @@ namespace API_Portafolio.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserProyect",
+                name: "UserProyects",
                 columns: table => new
                 {
-                    ProyectsId = table.Column<int>(type: "integer", nullable: false),
-                    UserId = table.Column<int>(type: "integer", nullable: false)
+                    ProyectsId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProyect", x => new { x.UserId, x.ProyectsId });
+                    table.PrimaryKey("PK_UserProyects", x => new { x.ProyectsId, x.UserId });
                     table.ForeignKey(
-                        name: "FK_UserProyect_Proyects_UserId",
-                        column: x => x.UserId,
+                        name: "FK_UserProyects_Proyects_ProyectsId",
+                        column: x => x.ProyectsId,
                         principalTable: "Proyects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserProyect_Users_ProyectsId",
-                        column: x => x.ProyectsId,
+                        name: "FK_UserProyects_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserProyect_ProyectsId",
-                table: "UserProyect",
-                column: "ProyectsId");
+                name: "IX_UserProyects_UserId",
+                table: "UserProyects",
+                column: "UserId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "UserProyect");
+                name: "UserProyects");
 
             migrationBuilder.DropTable(
                 name: "Proyects");
