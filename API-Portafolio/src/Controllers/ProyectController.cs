@@ -32,6 +32,7 @@ public class ProyectController : ControllerBase
                 p.Name,
                 p.Image,
                 p.Url,
+                p.Role,
                 UsersID = p.UserProyects.Select(up => up.UserId).ToList()
             }
             )

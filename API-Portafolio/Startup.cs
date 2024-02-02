@@ -6,7 +6,7 @@ public class Startup
     public Startup(IConfiguration configuration)
     {
         Configuration = configuration;
-            Console.WriteLine("AAAAAAAAAAAA");
+            Console.WriteLine("Configurando");
 
     }
 
@@ -14,6 +14,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+
         services.AddControllers();
         
         services.AddDbContext<ApplicationDbContext>(opt =>
@@ -28,10 +29,26 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nombre de tu API", Version = "v1" });
         });
+
+        //CORS CONFIG
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhost3000",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                           .AllowAnyHeader()
+                           .AllowAnyMethod();
+                });
+        });
+
     }
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
+
+        app.UseCors("AllowLocalhost3000");
+
         if (env.IsDevelopment())
         {
             // ...
