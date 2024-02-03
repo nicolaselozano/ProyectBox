@@ -1,0 +1,1 @@
+export const API_ENDPOINT = "http://localhost:5019/api";
