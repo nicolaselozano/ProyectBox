@@ -1,9 +1,8 @@
+"use client";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { getUserProyects } from "@/Services/proyect/getUserProyects";
 import { AxiosResponse } from "axios";
-
-const Proyects : React.FC = () => {
+import { getUserProyects } from "@/Services/proyect/getUserProyects";
+const Proyects = () => {
 
     const [allProducts, setAllProducts] = useState<any[]>([]);
 

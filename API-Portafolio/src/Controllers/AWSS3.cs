@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 public class AWSS3Controller : ControllerBase
 {
         private readonly IAmazonS3 _amazonS3;
-    
+        private readonly string bucket;
         public AWSS3Controller(IAmazonS3 amazonS3, IConfiguration configuration)
         {
             _amazonS3 = amazonS3;
@@ -19,6 +19,7 @@ public class AWSS3Controller : ControllerBase
             var accessKeyId = awsConfig["AccessKeyId"];
             var secretKey = awsConfig["SecretKey"];
             var region = Amazon.RegionEndpoint.SAEast1;
+            bucket = awsConfig["bucketName"];
 
             var amazonS3Config = new AmazonS3Config
             {
@@ -32,7 +33,6 @@ public class AWSS3Controller : ControllerBase
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile([FromBody] FileUploadModel model)
         {
-            var bucketName = "portafolio-nicoeloza";
             var key = model.FileName;
             var content = model.Content;
 
@@ -40,7 +40,7 @@ public class AWSS3Controller : ControllerBase
             {
                 var putObjectRequest = new PutObjectRequest
                 {
-                    BucketName = bucketName,
+                    BucketName = bucket,
                     Key = key,
                     ContentBody = content
                 };

@@ -56,4 +56,50 @@ public class UserController : ControllerBase
             return StatusCode(500, "Error interno del servidor");
         }
     }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteProyect(Guid id)
+    {
+        
+        try
+        {
+            var entity = _context.Users.Find(id);
+            if (entity != null)
+            {
+                entity.isDeleted = true;
+                _context.SaveChanges();
+            }
+            return Ok($"{entity?.Name ?? "Usuario"} borrado Exitosamente");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al borrar el usuario: {ex.Message}");
+            throw;
+        }
+    }
+
+    //ACTIVAR Proyecto 
+    [HttpPut("active/{id}")]
+    public IActionResult ActiveProyect(Guid id)
+    {
+        try
+        {
+            var entity = _context.Users.Find(id);
+            if (entity != null)
+            {
+                entity.isDeleted = false;
+                _context.SaveChanges();
+                return Ok($"{entity.Name} activado exitosamente");
+            }
+            else
+            {
+                return NotFound($"No se encontró el usuario con el id: {id}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al activar el usuario: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
 }

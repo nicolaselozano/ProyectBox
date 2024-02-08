@@ -11,6 +11,7 @@ namespace Proyects.Models
         public string Url { get; set; }
         public string Image { get; set; }
         public string Role { get; set; }
+        public bool isDeleted { get; set; } = false;
         public List<UserProyect> UserProyects { get; private set; } = new List<UserProyect>();
     }
 }
