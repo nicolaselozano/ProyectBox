@@ -1,7 +1,6 @@
 import Link from "next/link";
 
 const NavBar = () => {
-  console.log("aaa");
   
     return (
         <nav>
