@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API_Portafolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240131064326_m1")]
-    partial class m1
+    [Migration("20240204231605_M1")]
+    partial class M1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,6 +46,9 @@ namespace API_Portafolio.Migrations
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("varchar");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
@@ -86,6 +89,9 @@ namespace API_Portafolio.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 

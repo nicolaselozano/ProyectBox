@@ -33,6 +33,7 @@ public class ProyectController : ControllerBase
                 p.Image,
                 p.Url,
                 p.Role,
+
                 UsersID = p.UserProyects.Select(up => up.UserId).ToList()
             }
             )
@@ -48,39 +49,96 @@ public class ProyectController : ControllerBase
         }
     }
 
-    [HttpPost]
-    public IActionResult AddProyect([FromBody] Proyect p, [FromQuery] Guid UserId)
+    [HttpDelete("{id}")]
+    public IActionResult DeleteProyect(Guid id)
     {
-         Console.WriteLine($"UserId received: {UserId}");
+        
+        try
+        {
+            var entity = _context.Proyects.Find(id);
+            if (entity != null)
+            {
+                entity.isDeleted = true;
+                _context.SaveChanges();
+            }
+            return Ok($"{entity?.Name ?? "Proyecto"} borrado Exitosamente");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al borrar el proyecto: {ex.Message}");
+            throw;
+        }
+    }
 
+    //ACTIVAR Proyecto 
+    [HttpPut("active/{id}")]
+    public IActionResult ActiveProyect(Guid id)
+    {
+        try
+        {
+            var entity = _context.Proyects.Find(id);
+            if (entity != null)
+            {
+                entity.isDeleted = false;
+                _context.SaveChanges();
+                return Ok($"{entity.Name} activado exitosamente");
+            }
+            else
+            {
+                return NotFound($"No se encontró el proyecto con el id: {id}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al activar el proyecto: {ex.Message}");
+            return StatusCode(500, "Error interno del servidor");
+        }
+    }
+
+    [HttpPost]//recibe un json que tiene los datos del proyecto y las id de los usuarios
+    public IActionResult AddProyect([FromBody] Proyect pAndU)
+    {
         try
         {
             if (ModelState.IsValid)
             {
+                var pExist = _context.Proyects.FirstOrDefault(p => p.Name == pAndU.Name);
+
+                if(pExist != null)
+                {
+                    throw new Exception("El proyecto ya existe");
+                }
+
+                var p = new Proyect
+                {
+                    Name = pAndU.Name,
+                    Url = pAndU.Url,
+                    Image = pAndU.Image,
+                    Role = pAndU.Role
+                };
                 // Agrega el proyecto al contexto
                 _context.Proyects.Add(p);
 
-                // Encuentra el usuario correspondiente en el contexto
-                var user = _context.Users.Find(UserId);
-
-                // Crea la relación UserProyect
-                var userProyect = new UserProyect
+                //recorro el arreglo de usuarios
+                foreach (var userId in pAndU.UserProyects)
                 {
-                    User = user,  // Asigna el usuario correcto
-                    Proyects = p
-                };
+                    var user = _context.Users.Find(userId);
+                
+                    // Crea la relación UserProyect
+                    var userProyect = new UserProyect
+                    {
+                        User = user,  // Asigna el usuario correcto
+                        Proyects = p
+                    };
+                    _context.UserProyects.Add(userProyect);
+                    user.UserProyects.Add(userProyect);
 
-                // Agrega el UserProyect al contexto
-                _context.UserProyects.Add(userProyect);
-
-                // Agrega el UserProyect a la lista UserProyects del usuario
-                user.UserProyects.Add(userProyect);
+                }
 
                 // Guarda los cambios en la base de datos
                 _context.SaveChanges();
 
-                // Retorna la respuesta CreatedAtAction después de guardar los cambios
-                return CreatedAtAction(nameof(GetProyects), null);
+                return Ok($"Proyecto: {p.Name} creado exitosamente");
             }
 
             return BadRequest(ModelState);
@@ -88,7 +146,7 @@ public class ProyectController : ControllerBase
         catch (Exception ex)
         {
             Console.WriteLine($"Error al crear proyectos: {ex.Message}");
-            return StatusCode(500, "Error interno del servidor");
+            return StatusCode(500, ex.Message);
         }
     }
 

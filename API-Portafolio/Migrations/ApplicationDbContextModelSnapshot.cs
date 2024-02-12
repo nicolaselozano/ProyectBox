@@ -44,6 +44,9 @@ namespace API_Portafolio.Migrations
                         .IsRequired()
                         .HasColumnType("varchar");
 
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
                     b.HasKey("Id");
 
                     b.ToTable("Proyects");
@@ -83,6 +86,9 @@ namespace API_Portafolio.Migrations
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
