@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button_Nav from "./Button/Button_Nav";
 
 const NavBar = () => {
   
@@ -6,14 +6,14 @@ const NavBar = () => {
         <nav>
           <ul>
             <li>
-              <Link href="/">
+              <Button_Nav to="/">
                 Inicio
-              </Link>
+              </Button_Nav>
             </li>
             <li>
-              <Link href="/pages/proyects">
-                Proyects
-              </Link>
+              <Button_Nav to="/pages/proyects" >
+                Proyecto
+              </Button_Nav>
             </li>
             {/* Agrega más enlaces según sea necesario */}
           </ul>
