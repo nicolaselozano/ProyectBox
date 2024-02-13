@@ -1,5 +1,5 @@
 import React from 'react';
-import NavBar from '@/components/NavBar';
+import NavBar from '@/components/NavBar/NavBar';
 import 'tailwindcss/tailwind.css';
 
 export const metadata = {
@@ -17,7 +17,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <title>{metadata.title}</title>
         <meta name="description" content={metadata.description} />
       </head>
-      <body className="font-inter">
+      <body className="font-inter bg-gray-800 text-white" >
         <NavBar />
         <div>
           {children}

@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(24, 23, 23, 1);
+    border: 0.5rem solid rgba(231, 243, 200, 1);
+    border-radius: 0 0 1rem 1rem;
+    padding: 0.4rem;
+}
+  
+  .hide_mobile {
+    display: block;
+  }
+  
+  @media (max-width: 767px) {
+    .container {
+        justify-content: end;
+    }
+    .hide_mobile {
+      display: none;
+    }
+  }
+  

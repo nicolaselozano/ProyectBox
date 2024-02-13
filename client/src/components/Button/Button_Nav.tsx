@@ -11,7 +11,7 @@ const Button_Nav:React.FC<Label> = ({children,to}:Label) => {
     return (
 
         <Link href={to}>
-            <div className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            <div className="bg-green-600 hover:bg-green-800 text-white font-bold py-2 px-4 rounded mt-2">
             {children}
             </div>
         </Link>
