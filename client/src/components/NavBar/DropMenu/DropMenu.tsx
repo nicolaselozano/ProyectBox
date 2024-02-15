@@ -20,6 +20,11 @@ const DropMenu = () => {
     }
     return (
         <div className={style.container}>
+
+            <div className={style.options_sreen}>
+                <NavOptions/>
+            </div>
+
             <div className={style.menu_button} 
             onClick={handleDropMenu} 
             onMouseEnter={handleMouseEnter}
@@ -32,6 +37,7 @@ const DropMenu = () => {
             {
                 toggle ? 
                 <div
+                className={style.modalContainer}
                 onMouseLeave={handleMouseLeave}
                 >
                 <NavOptions/>
