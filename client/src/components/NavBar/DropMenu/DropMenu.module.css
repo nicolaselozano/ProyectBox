@@ -13,6 +13,7 @@
 @media (max-width: 767px) {
 
   .options_sreen {
+    margin: 0.5rem;
     display: none;
   }
   .menu_button {
