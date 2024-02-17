@@ -1,5 +1,6 @@
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Proyects.Models;
 using UserProyects.Models;
 
@@ -23,7 +24,7 @@ public class ProyectController : ControllerBase
 
             int skip = (page - 1) * pageSize;
 
-            var proyects = _context.Proyects
+            var proyects = _context.Proyects 
             .Skip(skip)
             .Take(pageSize)
             .Select(p => new
@@ -33,7 +34,7 @@ public class ProyectController : ControllerBase
                 p.Image,
                 p.Url,
                 p.Role,
-
+                
                 UsersID = p.UserProyects.Select(up => up.UserId).ToList()
             }
             )
@@ -49,6 +50,35 @@ public class ProyectController : ControllerBase
         }
     }
 
+    //Put Proyect
+    [HttpPut("{id}")]
+    public IActionResult UpdateProyect(Guid id, [FromBody] Proyect UpdateP)
+    {
+        try
+        {
+            Console.WriteLine("hola");
+            var entity = _context.Proyects.Find(id);
+            if (entity == null)
+            {
+                return NotFound($"No se encontró el proyecto con ID {id}");
+            }
+
+            entity.Name = UpdateP.Name ?? entity.Name;
+            entity.Image = UpdateP.Image ?? entity.Image;
+            entity.Url = UpdateP.Url ?? entity.Url;
+            entity.Role = UpdateP.Role ?? entity.Role;
+
+            _context.SaveChanges();
+
+            return Ok($"Proyecto con ID {id} actualizado exitosamente");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al borrar el proyecto: {ex.Message}");
+            throw;
+        }
+    }
+
     [HttpDelete("{id}")]
     public IActionResult DeleteProyect(Guid id)
     {
@@ -56,11 +86,14 @@ public class ProyectController : ControllerBase
         try
         {
             var entity = _context.Proyects.Find(id);
-            if (entity != null)
+        
+            if (entity == null)
             {
-                entity.isDeleted = true;
-                _context.SaveChanges();
+                return NotFound($"No se encontró el proyecto con ID {id}");
             }
+
+            entity.isDeleted = true;
+            _context.SaveChanges();
             return Ok($"{entity?.Name ?? "Proyecto"} borrado Exitosamente");
         }
         catch (Exception ex)
@@ -95,44 +128,56 @@ public class ProyectController : ControllerBase
         }
     }
 
-    [HttpPost]//recibe un json que tiene los datos del proyecto y las id de los usuarios
-    public IActionResult AddProyect([FromBody] Proyect pAndU)
+    public class AddProyectRequest
+    {
+        public Proyect Proyect { get; set; }
+        public List<Guid> UserProyects { get; set; }
+    }
+
+    [HttpPost]
+    public IActionResult AddProyect([FromBody] AddProyectRequest request)
     {
         try
         {
             if (ModelState.IsValid)
             {
-                var pExist = _context.Proyects.FirstOrDefault(p => p.Name == pAndU.Name);
+                var pExist = _context.Proyects.FirstOrDefault(p => p.Name == request.Proyect.Name);
 
-                if(pExist != null)
+                if (pExist != null)
                 {
                     throw new Exception("El proyecto ya existe");
                 }
 
                 var p = new Proyect
                 {
-                    Name = pAndU.Name,
-                    Url = pAndU.Url,
-                    Image = pAndU.Image,
-                    Role = pAndU.Role
+                    Name = request.Proyect.Name,
+                    Url = request.Proyect.Url,
+                    Image = request.Proyect.Image,
+                    Role = request.Proyect.Role
                 };
+
                 // Agrega el proyecto al contexto
                 _context.Proyects.Add(p);
 
-                //recorro el arreglo de usuarios
-                foreach (var userId in pAndU.UserProyects)
+                // Recorro el arreglo de usuarios
+                foreach (var userId in request.UserProyects)
                 {
-                    var user = _context.Users.Find(userId);
-                
+                    var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+                    if (user == null)
+                    {
+                        throw new Exception($"El usuario con ID {userId} no existe");
+                    }
+
                     // Crea la relación UserProyect
                     var userProyect = new UserProyect
                     {
                         User = user,  // Asigna el usuario correcto
                         Proyects = p
                     };
+
                     _context.UserProyects.Add(userProyect);
                     user.UserProyects.Add(userProyect);
-
                 }
 
                 // Guarda los cambios en la base de datos
@@ -149,6 +194,7 @@ public class ProyectController : ControllerBase
             return StatusCode(500, ex.Message);
         }
     }
+
 
 }
 

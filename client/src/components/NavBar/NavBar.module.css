@@ -1,0 +1,26 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0 0 1rem 1rem;
+    padding: 0.4rem;
+}
+
+.container__dropMenu {
+  position: absolute;
+  margin : 0 0 0 40%;
+}
+  .hide_mobile {
+    display: block;
+  }
+  
+  @media (max-width: 767px) {
+    .container__dropMenu {
+      position: relative;
+      margin: 0;
+    }
+    .hide_mobile {
+      margin: 0.5rem;
+      display: none;
+    }
+  }
+  

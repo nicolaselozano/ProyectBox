@@ -46,3 +46,4 @@ $RECYCLE.BIN/
 *.suo
 *.userosscache
 *.sln.docstates
+.fake
