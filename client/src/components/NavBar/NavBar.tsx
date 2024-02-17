@@ -4,9 +4,11 @@ import imgLogo from "../../../asset/OIG4.webp";
 
 const NavBar = () => {
   return (
-    <nav className={style.container}>
+    <nav className={`${style.container} bg-cards_bg`}>
       <img className="h-16" src={imgLogo.src} alt="Logo My Proyects" />
-      <DropMenu/>
+      <div className={style.container__dropMenu}>
+        <DropMenu/>
+      </div>
     </nav>
   );
 }

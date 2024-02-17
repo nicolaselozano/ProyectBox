@@ -1,11 +1,13 @@
-const Home = () =>{
+import React from 'react';
+import style from './page.module.css';
+import homeImg from "../../asset/home.webp";
 
-    return(
-        <div>
-            <h1>Bienvenido al home</h1>
-        </div>
-    )
-
-}
+const Home = () => {
+  return (
+    <div className={style.container}>
+        <img src={homeImg.src} alt="home image" />
+    </div>
+  );
+};
 
 export default Home;
