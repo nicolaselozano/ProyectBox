@@ -31,12 +31,12 @@ const AllItems = () => {
 
     return(
         <div>
-            <h1>Productos</h1>
+            <h1 className="text-4xl font-bold text-violet_text shadow-lg animate-shine">Productos</h1>
             {
                 allProducts.map((proyect,key) => 
                 <a href={proyect.url} className="" target="_blank" key={key}>
                     <div className={`${style.container} bg-cards_bg 
-                    border border-solid border-cards_border border-4 rounded-md`}>
+                    border border-solid border-cards_border border-4 rounded-md animate-borde_shine`}>
                         <img className={`${style.image} max-w-48`} src={proyect.image} alt={proyect.name} />
                         <div className={style.details}>
                         <h2 className="text-xl font-semibold mb-2">{proyect.name}</h2>
