@@ -12,5 +12,12 @@ namespace Users.Models
         public string Password {get; set;}
         public bool isDeleted { get; set; } = false;
         public List<UserProyect> UserProyects {get;} = new List<UserProyect>();
+
+        public User()
+        {
+            Name="user";
+            Email="email";
+            Password="pass";
+        }
     }
 }

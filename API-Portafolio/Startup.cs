@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Amazon.S3;
 
-
 public class Startup
 {
 
@@ -17,6 +16,8 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        
+        
         services.AddControllers();
 
         services.AddDbContext<ApplicationDbContext>(opt =>
@@ -58,8 +59,9 @@ public class Startup
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portafolio .NET"));
         }
 
-        app.UseAuthorization();
+
         app.UseRouting();
+        app.UseAuthorization();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

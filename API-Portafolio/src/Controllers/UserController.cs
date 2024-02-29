@@ -22,6 +22,17 @@ public class UserController : ControllerBase
             var users = _context.Users
             .Skip(skip)
             .Take(pageSize)
+            .Select(user => new
+            {
+                user.Id,
+                user.Name,
+                user.Email,
+                user.Password,
+                user.isDeleted,
+                
+                ProductID = user.UserProyects.Select(up => up.ProyectsId).ToList()
+            }
+            )
             .ToList();
             return Ok(users);
         }
