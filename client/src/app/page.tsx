@@ -1,11 +1,11 @@
 import React from 'react';
-import style from './page.module.css';
-import homeImg from "../../asset/home.webp";
+import HomePage from '@/components/Home/HomePage';
+import { Footer } from 'flowbite-react';
 
 const Home = () => {
   return (
-    <div className={style.container}>
-        <img src={homeImg.src} alt="home image" />
+    <div>
+      <HomePage/>
     </div>
   );
 };

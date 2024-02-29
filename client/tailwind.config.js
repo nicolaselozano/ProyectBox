@@ -1,8 +1,14 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ["./src/**/*.{html,js,ts,tsx}"],
+  content: [
+    "./src/**/*.{html,js,ts,tsx}",
+    "./node_modules/flowbite-react/lib/**/*.js"
+  ],
   theme: {
     extend: {
+      fontFamily: {
+        'russo': ['Russo One', 'sans-serif'],
+      },
       backgroundColor: {
         "general_bg": 'rgba(34, 28, 41, 1)', 
         "cards_bg": "rgba(0, 0, 0, 1)",
@@ -36,5 +42,6 @@ module.exports = {
   },
   plugins: [
     require('tailwindcss-gradients'),
+    require("flowbite/plugin")
   ],
 };
