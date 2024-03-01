@@ -46,7 +46,8 @@ export const {
     addProduct,
     setLoadingTrue,
     setLoadingFalse,
-    setError
+    setError,
+    reset
  } = Product.actions;
 
 export default Product.reducer;

@@ -1,5 +1,5 @@
 "use client"
-import { getAllProducts } from "@/redux/services/getAllProducts";
+import { getAllProducts, resetAllProducts } from "@/redux/services/getAllProducts";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { Carousel, CustomFlowbiteTheme } from "flowbite-react";
 import { useEffect } from "react";
@@ -19,29 +19,25 @@ const Carrusel = () => {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        dispatch(getAllProducts())
+        dispatch(getAllProducts)
+
+        return () => {dispatch(resetAllProducts)}
+        
     },[dispatch])
 
   return (
     <div className="mt-4 h-56 sm:h-64 xl:h-80 2xl:h-96">
       <Carousel theme={customTheme}>
-        <div className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
-            {allProduct.length && !error.message ? 
-            <a href={allProduct[0].url} target="_blank">
-              <Item proyect={allProduct[0]}/>
+        {
+          allProduct.length ? allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect,key) => 
+          <div key={key} className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
+            <a href={proyect.url} target="_blank">
+              <Item proyect={proyect}/>
             </a>
-            : error.message ? <h1>{error.message}</h1> : <h1>loading...</h1>}
-        </div>
-        <div className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
-            {allProduct[0] && !error.message ? 
-            <h1>Item 2</h1>
-            : error.message || !allProduct[1]  ? <h1>{error.message}</h1> : <h1>loading...</h1>}
-        </div>
-        <div className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
-            {allProduct[0] && !error.message ?
-            <h2>item 3</h2>
-            : error.message || !allProduct[2]  ? <h1>{error.message}</h1> : <h1>loading...</h1>}
-        </div>
+          </div>
+          ): error.message ? <h1>{error.message}</h1> : <h1>loading...</h1>
+        }
+
       </Carousel>
     </div>
   );

@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from "axios";
 import { API_ENDPOINT } from "../../../vars";
-import { addProduct, setError, setLoadingFalse, setLoadingTrue } from "../slices/Product";
+import { addProduct, reset, setError, setLoadingFalse, setLoadingTrue } from "../slices/Product";
 import { Dispatch } from "@reduxjs/toolkit";
 
-export const getAllProducts = () => async (dispatch:Dispatch) => {
+export const getAllProducts = async (dispatch:Dispatch) =>  {
 
     try {
         dispatch(setLoadingTrue())
@@ -21,5 +21,9 @@ export const getAllProducts = () => async (dispatch:Dispatch) => {
     }
 
 
+}
+
+export const resetAllProducts = async (dispatch:Dispatch) =>  {
+    dispatch(reset());
 }
 

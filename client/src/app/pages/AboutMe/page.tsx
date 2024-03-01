@@ -1,3 +1,4 @@
+"use client"
 import MyProfile from "@/components/AboutMe/MyProfile/MyProfile";
 
 const AboutMe = () => {

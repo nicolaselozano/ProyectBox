@@ -4,7 +4,7 @@ export const GetHour = () => {
     const dateH = date.getHours();
 
     if(dateH < 17 && (dateH > 7)){
-        return "Buenos Dias";
+        return "Buenos Días";
     } else if(dateH < 20) { 
         return "Buenas Tardes"; 
     } else return "Buenas Noches";

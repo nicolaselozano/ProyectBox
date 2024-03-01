@@ -15,8 +15,14 @@
     margin-bottom: 1vh;
 }
 
-.container__welcoming h1 {
-    font-size: 4vh;
+.container__welcoming_txt  {
+    font-size: 8vh;
+}
+
+.container__welcoming_name {
+    font-size: 10vh;
+    font-weight: bolder;
+    color: rgb(128, 0, 255);
 }
 
 .container__welcoming_img {
@@ -55,11 +61,11 @@
     border-radius: 50%;
 }
 
-/* Mascota levitante */
+/* Mascota */
 .container__welcoming_pet {
     position: absolute;
-    width: 7vh;
-    margin: -5vh 0 0 63vh;
+    width: 10vh;
+    margin: 27vh 0 0 155vh;
     overflow: hidden;
     animation: levitante 2s ease-in-out infinite;
 }
