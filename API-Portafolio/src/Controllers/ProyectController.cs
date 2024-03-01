@@ -1,6 +1,7 @@
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ProyectImages.Models;
 using Proyects.Models;
 using UserProyects.Models;
 
@@ -27,6 +28,7 @@ public class ProyectController : ControllerBase
             var proyects = _context.Proyects 
             .Skip(skip)
             .Take(pageSize)
+            .Include(p => p.ImagesP)
             .Select(p => new
             {
                 p.Id,
@@ -34,8 +36,10 @@ public class ProyectController : ControllerBase
                 p.Image,
                 p.Url,
                 p.Role,
+                p.Description,
                 
-                UsersID = p.UserProyects.Select(up => up.UserId).ToList()
+                UsersID = p.UserProyects.Select(up => up.UserId).ToList(),
+                Imgs = p.ImagesP ?? p.ImagesP.ToList()
             }
             )
             .ToList();
@@ -56,7 +60,6 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            Console.WriteLine("hola");
             var entity = _context.Proyects.Find(id);
             if (entity == null)
             {
@@ -67,6 +70,7 @@ public class ProyectController : ControllerBase
             entity.Image = UpdateP.Image ?? entity.Image;
             entity.Url = UpdateP.Url ?? entity.Url;
             entity.Role = UpdateP.Role ?? entity.Role;
+            entity.Description = UpdateP.Description ?? entity.Description;
 
             _context.SaveChanges();
 
@@ -153,7 +157,8 @@ public class ProyectController : ControllerBase
                     Name = request.Proyect.Name,
                     Url = request.Proyect.Url,
                     Image = request.Proyect.Image,
-                    Role = request.Proyect.Role
+                    Role = request.Proyect.Role,
+                    Description = request.Proyect.Description,
                 };
 
                 // Agrega el proyecto al contexto
@@ -195,6 +200,61 @@ public class ProyectController : ControllerBase
         }
     }
 
+    [HttpGet("{id}")]
+    public IActionResult GetProyect(Guid id)
+    {
+        try
+        {
+            var entity = _context.Proyects.Find(id);
+            if (entity != null)
+            {
+                return Ok(entity);
+            }
+            else
+            {
+                return NotFound($"No se encontró el proyecto con el id: {id}");
+            }
+        }
+        catch (Exception)
+        {
+            
+            throw;
+        }
+    }
 
+    [HttpPost("images/{id}")]
+    public IActionResult AddImage([FromRoute]Guid id, [FromBody] ImagesRequest request)
+    {
+        try
+        {
+            var entityProyect = _context.Proyects.Find(id);
+            if (entityProyect != null)
+            {
+                foreach (var img in request.Imgs)
+                {
+                    var entityImage = _context.ProyectImages.Add(
+                        new ProyectImage
+                        {
+                            ProyectId = id,
+                            Url = img
+                        });
+
+                    entityProyect.ImagesP.Add(entityImage.Entity);
+                }
+
+                _context.SaveChanges();
+
+                return Ok(_context.ProyectImages);
+            }
+            else
+            {
+                return NotFound($"No se encontró el proyecto con el id: {id}");
+            }
+        }
+        catch (Exception)
+        {
+            throw;
+        }
+    }
 }
 

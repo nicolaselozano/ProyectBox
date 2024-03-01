@@ -3,6 +3,7 @@ using System;
 using ApplicationDb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API_Portafolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240301043639_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,7 +34,7 @@ namespace API_Portafolio.Migrations
                     b.Property<Guid>("ProyectId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("ProyectId1")
+                    b.Property<Guid>("ProyectId1")
                         .HasColumnType("uuid");
 
                     b.Property<string>("Url")
@@ -127,9 +130,13 @@ namespace API_Portafolio.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Proyects.Models.Proyect", null)
+                    b.HasOne("Proyects.Models.Proyect", "Proyect")
                         .WithMany("ImagesP")
-                        .HasForeignKey("ProyectId1");
+                        .HasForeignKey("ProyectId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proyect");
                 });
 
             modelBuilder.Entity("UserProyects.Models.UserProyect", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API_Portafolio.Migrations
 {
     /// <inheritdoc />
-    public partial class M1 : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,10 +16,11 @@ namespace API_Portafolio.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Name = table.Column<string>(type: "varchar", nullable: false),
-                    Url = table.Column<string>(type: "varchar", nullable: false),
-                    Image = table.Column<string>(type: "varchar", nullable: false),
-                    Role = table.Column<string>(type: "varchar", nullable: false),
+                    Name = table.Column<string>(type: "varchar", nullable: true),
+                    Url = table.Column<string>(type: "varchar", nullable: true),
+                    Image = table.Column<string>(type: "varchar", nullable: true),
+                    Role = table.Column<string>(type: "varchar", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: true),
                     isDeleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
@@ -40,6 +41,32 @@ namespace API_Portafolio.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProyectImages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProyectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProyectId1 = table.Column<Guid>(type: "uuid", nullable: false),
+                    Url = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProyectImages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProyectImages_Proyects_ProyectId",
+                        column: x => x.ProyectId,
+                        principalTable: "Proyects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProyectImages_Proyects_ProyectId1",
+                        column: x => x.ProyectId1,
+                        principalTable: "Proyects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,6 +94,16 @@ namespace API_Portafolio.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProyectImages_ProyectId",
+                table: "ProyectImages",
+                column: "ProyectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProyectImages_ProyectId1",
+                table: "ProyectImages",
+                column: "ProyectId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UserProyects_UserId",
                 table: "UserProyects",
                 column: "UserId");
@@ -75,6 +112,9 @@ namespace API_Portafolio.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "ProyectImages");
+
             migrationBuilder.DropTable(
                 name: "UserProyects");
 

@@ -46,6 +46,12 @@ public class Startup
         // AWS S3
         services.AddAWSService<IAmazonS3>();
 
+        //serialization loop
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+        });
+
 
     }
 

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using ProyectImages.Models;
 using Proyects.Models;
 using UserProyects.Models;
 using Users.Models;
@@ -10,6 +11,8 @@ namespace ApplicationDb.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Proyect> Proyects { get; set; }
         public DbSet<UserProyect> UserProyects { get; set; }
+
+        public DbSet<ProyectImage> ProyectImages { get; set;}
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -29,7 +32,7 @@ namespace ApplicationDb.Models
             modelBuilder.Entity<Proyect>()
                 .Property(p => p.Image)
                 .HasColumnType("varchar");
-            
+
             modelBuilder.Entity<Proyect>()
                 .Property(p => p.Role)
                 .HasColumnType("varchar");
@@ -46,6 +49,11 @@ namespace ApplicationDb.Models
                 .HasOne(up => up.Proyects)
                 .WithMany(p => p.UserProyects)
                 .HasForeignKey(up => up.ProyectsId);
+                
+            modelBuilder.Entity<ProyectImage>()
+            .HasOne<Proyect>()
+            .WithMany()
+            .HasForeignKey(pi => pi.ProyectId);
         }
     }
 }

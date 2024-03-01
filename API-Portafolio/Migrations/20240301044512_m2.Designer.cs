@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API_Portafolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240204231605_M1")]
-    partial class M1
+    [Migration("20240301044512_m2")]
+    partial class m2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,26 +25,50 @@ namespace API_Portafolio.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("ProyectImages.Models.ProyectImage", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ProyectId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("ProyectId1")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Url")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProyectId");
+
+                    b.HasIndex("ProyectId1");
+
+                    b.ToTable("ProyectImages");
+                });
+
             modelBuilder.Entity("Proyects.Models.Proyect", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("varchar");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("varchar");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("varchar");
 
                     b.Property<string>("Url")
-                        .IsRequired()
                         .HasColumnType("varchar");
 
                     b.Property<bool>("isDeleted")
@@ -98,6 +122,19 @@ namespace API_Portafolio.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("ProyectImages.Models.ProyectImage", b =>
+                {
+                    b.HasOne("Proyects.Models.Proyect", null)
+                        .WithMany()
+                        .HasForeignKey("ProyectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Proyects.Models.Proyect", null)
+                        .WithMany("ImagesP")
+                        .HasForeignKey("ProyectId1");
+                });
+
             modelBuilder.Entity("UserProyects.Models.UserProyect", b =>
                 {
                     b.HasOne("Proyects.Models.Proyect", "Proyects")
@@ -119,6 +156,8 @@ namespace API_Portafolio.Migrations
 
             modelBuilder.Entity("Proyects.Models.Proyect", b =>
                 {
+                    b.Navigation("ImagesP");
+
                     b.Navigation("UserProyects");
                 });
 
