@@ -5,18 +5,59 @@ import pfpImage from "../../../../asset/pfp1.webp";
 import style from "./MyProfile.module.css";
 import imgPet from "../../../../asset/face_Pet.webp";
 import { AppDispatch, useAppSelector } from "@/redux/store";
-import { error } from "console";
 import { useDispatch } from "react-redux";
 import { getAllProducts } from "@/redux/services/getAllProducts";
 import Item from "@/components/Proyects/Item/Item";
+import ImagesProyect from "./Images/ImagesProyect";
+import { useInView } from "react-intersection-observer";
+
+interface IProject {
+    id: string;
+    name: string;
+    url: string;
+    image: string;
+    role: string;
+    description: string;
+    usersID: string[];
+    imgs: IImage[];
+    isDeleted: boolean;
+}
+
+interface IImage {
+    id: string;
+    proyectId: string;
+    url: string;
+}
+  
 
 const MyProfile = () => {
 
+    
     const [currentTime,setCurrentTime] = useState("");
     const [currentDay,setCurrentDay] = useState("");
 
     const {allProduct,error} = useAppSelector((state) => state.productReducer);
     const dispatch = useDispatch<AppDispatch>();
+
+    const [ref, inView] = useInView({
+        triggerOnce: false,
+    });
+    
+    const [welcomingRef, welcomingInView] = useInView({
+    triggerOnce: false,
+    });
+
+    const [projectsRef, projectsInView] = useInView({
+    triggerOnce: false,
+    });
+
+    const [toolsRef, toolsInView] = useInView({
+    triggerOnce: false,
+    });
+    
+    const [aboutMeRef, aboutMeInView] = useInView({
+    triggerOnce: false,
+    });
 
     useEffect(() => {
 
@@ -26,16 +67,19 @@ const MyProfile = () => {
         
 
     },[dispatch,currentTime,currentDay]);
-    console.log(allProduct);
     
     return (
 
-        <fieldset className={`border-4 border-cards_border p-4`}>
+        <fieldset 
+        ref={ref}
+        className={`border-4 border-cards_border p-4 transition-opacity duration-1000 ${inView ? 'opacity-100' : 'opacity-0'}`}>
             <legend className="text-4xl font-black">Sobre Mi</legend>
 
             <div className={`${style.container}`}>
 
-                <div className={`${style.container__welcoming}`}>
+                <div 
+                ref={welcomingRef}
+                className={`mb-24 ${style.container__welcoming} transition-opacity duration-1000 ${welcomingInView ? 'opacity-100' : 'opacity-0'}`}>
                     <div className="m-32">
                         <div className={style.container__welcoming_pet}>
                             <img src={imgPet.src} alt="" />
@@ -50,22 +94,27 @@ const MyProfile = () => {
                 </div>
 
                 {/* Algunos de mis proyectos */}
-                <div>
+                <div 
+                ref={projectsRef}
+                className={`mb-36 transition-opacity duration-1000 ${projectsInView ? 'opacity-100' : 'opacity-0'}`}>
 
-                    <h1>Algunos de los Proyectos personales y otros en los que he participado</h1>
+                    <h1 className="text-center font-semibold text-4xl text-violet_text">Algunos Proyectos personales y otros en los que he participado</h1>
 
-                    <div>
+                    <div className="m-5">
                         { allProduct.length ? 
-                        allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect,key) => 
+                        allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:IProject,key) => 
                             <a href={proyect.url} className="" target="_blank" key={key}>
-                            <div className={`${style.container__item} bg-cards_bg 
-                            border border-solid border-cards_border border-4 rounded-md animate-borde_shine`}>
-                                <Item proyect={proyect} />
-                                <div>
-                                    <h2>Descripcion</h2>
-                                    <p className="whitespace-pre-line">{proyect.description}</p>
+                                <div className={`m-5 bg-cards_bg 
+                                border border-solid border-profile_border border-4 rounded-md`}>
+                                    <div className="flex flex-col justify-around">
+                                        <Item proyect={proyect} />
+                                        <ImagesProyect imgs={proyect.imgs}/>
+                                    </div>
+                                    <div className="m-4">
+                                        <h2>Descripcion</h2>
+                                        <p className="whitespace-pre-line">{proyect.description}</p>
+                                    </div>
                                 </div>
-                            </div>
                             </a>
                         ) : <span>Loading...</span>
                         }
@@ -73,14 +122,10 @@ const MyProfile = () => {
 
                 </div>
 
-                <div>
-                    <span className={`${style.container__welcoming_intro}`}> 
-                        Me encanta enfrentar y resolver desafíos en el área de 
-                        programación, y mi compromiso con la actualización constante
-                        me lleva a explorar las últimas tecnologías. 
-                        
-                    </span>
-                    <p>
+                <div 
+                ref={toolsRef}
+                className={`transition-opacity duration-1000 ${toolsInView ? 'opacity-100' : 'opacity-0'}`}>
+                    <p className="font-semibold text-4xl">
                         Mis herramientas son: 
                     </p>
                     
@@ -106,14 +151,21 @@ const MyProfile = () => {
 
                 </div>
 
-                <div className={`${style.container__welcoming_aboutMe}`}>
-                    
+                <div 
+                ref={aboutMeRef}
+                className={`text-center font-semibold transition-opacity duration-5000 ${style.container__welcoming_aboutMe} ${aboutMeInView ? 'opacity-100' : 'opacity-0'}`}>
+                    <span className={`${style.container__welcoming_intro}`}> 
+                        Me encanta enfrentar y resolver desafíos en el área de 
+                        programación, y mi compromiso con la actualización constante
+                        me lleva a explorar las últimas tecnologías. 
+                        
+                    </span>
                     <div className={`${style.container__welcoming_aboutMe_pfpContainer}`}>
                         <img className={`${style.container__welcoming_aboutMe_pfpImage}`} src={pfpImage.src} alt="Descripción de la imagen" />
                     </div>
 
                     
-                    <p> Estudie en la UTN la Tecnicatura Universitaria en Programación, con un enfoque sólido en API REST, Java y Hibernate. Luego decidí mejorar mis habilidades tecnológicas y me sumergí en un bootcamp intensivo llamado "Henry", dónde me especialice en back-end NodeJs,Express y con herramientas de front como React, Redux, tambien aprendi y familiarice con .NET 8, C# y NextJS, TypeScript, logrando hacer un proyecto web funcional para mostrar tus logros y proyectos (este Portafolio).</p>
+                    <p> Estudie en la UTN la Tecnicatura Universitaria en Programación, con un enfoque sólido en API REST, Java y Hibernate. Luego decidí mejorar mis habilidades tecnológicas y me sumergí en un bootcamp intensivo llamado Henry, dónde me especialice en back-end NodeJs,Express y con herramientas de front como React, Redux, tambien aprendi y familiarice con .NET 8, C# y NextJS, TypeScript, logrando hacer un proyecto web funcional pensado para mostrar tus logros y proyectos (este Portafolio).</p>
                 </div>
 
             </div>

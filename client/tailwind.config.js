@@ -15,6 +15,7 @@ module.exports = {
       },
       borderColor : {
         "cards_border": "rgba(148, 87, 235, 1)",
+        "profile_border": "rgba(0, 0, 0, 1)",
       },
       gradientColorStops: {
         "general_bg": 'rgba(34, 28, 41, 1)', 

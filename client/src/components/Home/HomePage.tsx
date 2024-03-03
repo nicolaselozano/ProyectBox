@@ -12,7 +12,7 @@ const HomePage = () => {
             
             <div className={style.container__button}>
                 <a href="/pages/AboutMe/">
-                    <button>Contact Me</button>
+                    <button>Sobre Mi</button>
                 </a>
                 <img src={homeImg_button.src} alt="Pet_button" />
             </div>
