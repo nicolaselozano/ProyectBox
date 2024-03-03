@@ -3,21 +3,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ProyectImages.Models;
 using Proyects.Models;
-using UserProyects.Models;
+using Proyects.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class ProyectController : ControllerBase
 {
-    private readonly ApplicationDbContext _context;
+    private readonly IProyectService _proyectService;
 
-    public ProyectController(ApplicationDbContext context)
+    public ProyectController(IProyectService proyectService)
     {
-        _context = context;
+        _proyectService = proyectService;
     }
 
     [HttpGet]
-    public IActionResult GetProyects([FromQuery]int page = 1,[FromQuery] int pageSize= 10)
+    public IActionResult GetProyectsC([FromQuery]int page = 1,[FromQuery] int pageSize= 10)
     {
         try
         {
@@ -25,24 +25,9 @@ public class ProyectController : ControllerBase
 
             int skip = (page - 1) * pageSize;
 
-            var proyects = _context.Proyects 
-            .Skip(skip)
-            .Take(pageSize)
-            .Include(p => p.ImagesP)
-            .Select(p => new
-            {
-                p.Id,
-                p.Name,
-                p.Image,
-                p.Url,
-                p.Role,
-                p.Description,
-                
-                UsersID = p.UserProyects.Select(up => up.UserId).ToList(),
-                Imgs = p.ImagesP ?? p.ImagesP.ToList()
-            }
-            )
-            .ToList();
+            var proyects = _proyectService.GetProyects(page,pageSize);
+
+            Console.WriteLine(proyects);
             
             
             return Ok(proyects);
@@ -60,19 +45,7 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            var entity = _context.Proyects.Find(id);
-            if (entity == null)
-            {
-                return NotFound($"No se encontró el proyecto con ID {id}");
-            }
-
-            entity.Name = UpdateP.Name ?? entity.Name;
-            entity.Image = UpdateP.Image ?? entity.Image;
-            entity.Url = UpdateP.Url ?? entity.Url;
-            entity.Role = UpdateP.Role ?? entity.Role;
-            entity.Description = UpdateP.Description ?? entity.Description;
-
-            _context.SaveChanges();
+            var entity = _proyectService.UpdateProyect(id,UpdateP);
 
             return Ok($"Proyecto con ID {id} actualizado exitosamente");
         }
@@ -89,16 +62,9 @@ public class ProyectController : ControllerBase
         
         try
         {
-            var entity = _context.Proyects.Find(id);
-        
-            if (entity == null)
-            {
-                return NotFound($"No se encontró el proyecto con ID {id}");
-            }
+            var entity = _proyectService.DeleteProyect(id);
 
-            entity.isDeleted = true;
-            _context.SaveChanges();
-            return Ok($"{entity?.Name ?? "Proyecto"} borrado Exitosamente");
+            return Ok(entity);
         }
         catch (Exception ex)
         {
@@ -113,17 +79,9 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            var entity = _context.Proyects.Find(id);
-            if (entity != null)
-            {
-                entity.isDeleted = false;
-                _context.SaveChanges();
-                return Ok($"{entity.Name} activado exitosamente");
-            }
-            else
-            {
-                return NotFound($"No se encontró el proyecto con el id: {id}");
-            }
+            var entity = _proyectService.ActiveProyect(id);
+
+            return Ok(id);
         }
         catch (Exception ex)
         {
@@ -132,66 +90,16 @@ public class ProyectController : ControllerBase
         }
     }
 
-    public class AddProyectRequest
-    {
-        public Proyect Proyect { get; set; }
-        public List<Guid> UserProyects { get; set; }
-    }
-
     [HttpPost]
     public IActionResult AddProyect([FromBody] AddProyectRequest request)
     {
         try
         {
-            if (ModelState.IsValid)
-            {
-                var pExist = _context.Proyects.FirstOrDefault(p => p.Name == request.Proyect.Name);
 
-                if (pExist != null)
-                {
-                    throw new Exception("El proyecto ya existe");
-                }
 
-                var p = new Proyect
-                {
-                    Name = request.Proyect.Name,
-                    Url = request.Proyect.Url,
-                    Image = request.Proyect.Image,
-                    Role = request.Proyect.Role,
-                    Description = request.Proyect.Description,
-                };
+            var entity = _proyectService.AddProyect(request);
 
-                // Agrega el proyecto al contexto
-                _context.Proyects.Add(p);
-
-                // Recorro el arreglo de usuarios
-                foreach (var userId in request.UserProyects)
-                {
-                    var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-
-                    if (user == null)
-                    {
-                        throw new Exception($"El usuario con ID {userId} no existe");
-                    }
-
-                    // Crea la relación UserProyect
-                    var userProyect = new UserProyect
-                    {
-                        User = user,  // Asigna el usuario correcto
-                        Proyects = p
-                    };
-
-                    _context.UserProyects.Add(userProyect);
-                    user.UserProyects.Add(userProyect);
-                }
-
-                // Guarda los cambios en la base de datos
-                _context.SaveChanges();
-
-                return Ok($"Proyecto: {p.Name} creado exitosamente");
-            }
-
-            return BadRequest(ModelState);
+            return Ok(entity);
         }
         catch (Exception ex)
         {
@@ -201,11 +109,11 @@ public class ProyectController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public IActionResult GetProyect(Guid id)
+    public IActionResult GetProyectById(Guid id)
     {
         try
         {
-            var entity = _context.Proyects.Find(id);
+            var entity = _proyectService.GetProyect(id);
             if (entity != null)
             {
                 return Ok(entity);
@@ -227,29 +135,9 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            var entityProyect = _context.Proyects.Find(id);
-            if (entityProyect != null)
-            {
-                foreach (var img in request.Imgs)
-                {
-                    var entityImage = _context.ProyectImages.Add(
-                        new ProyectImage
-                        {
-                            ProyectId = id,
-                            Url = img
-                        });
+            var entityProyect = _proyectService.AddImage(id,request);
 
-                    entityProyect.ImagesP.Add(entityImage.Entity);
-                }
-
-                _context.SaveChanges();
-
-                return Ok(_context.ProyectImages);
-            }
-            else
-            {
-                return NotFound($"No se encontró el proyecto con el id: {id}");
-            }
+            return Ok(entityProyect);
         }
         catch (Exception)
         {

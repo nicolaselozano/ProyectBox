@@ -2,6 +2,7 @@ using ApplicationDb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Amazon.S3;
+using Proyects.Services;
 
 public class Startup
 {
@@ -19,7 +20,11 @@ public class Startup
         
         
         services.AddControllers();
-
+        services.AddScoped<IProyectService, ProyectService>();
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = null;
+        });
         services.AddDbContext<ApplicationDbContext>(opt =>
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -46,11 +51,6 @@ public class Startup
         // AWS S3
         services.AddAWSService<IAmazonS3>();
 
-        //serialization loop
-        services.AddControllers().AddJsonOptions(options =>
-        {
-            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-        });
 
 
     }
