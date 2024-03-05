@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API_Portafolio.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class m1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,8 +49,8 @@ namespace API_Portafolio.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProyectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProyectId1 = table.Column<Guid>(type: "uuid", nullable: false),
-                    Url = table.Column<string>(type: "text", nullable: false)
+                    Url = table.Column<string>(type: "text", nullable: false),
+                    ProyectId1 = table.Column<Guid>(type: "uuid", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,8 +65,7 @@ namespace API_Portafolio.Migrations
                         name: "FK_ProyectImages_Proyects_ProyectId1",
                         column: x => x.ProyectId1,
                         principalTable: "Proyects",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

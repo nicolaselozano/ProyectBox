@@ -42,12 +42,16 @@ public class Startup
             options.AddPolicy("AllowLocalhost3000",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
-                           .AllowAnyHeader()
-                           .AllowAnyMethod();
-                });
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                }); 
         });
 
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = null;
+        });
         // AWS S3
         services.AddAWSService<IAmazonS3>();
 
