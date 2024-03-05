@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && postcss styles -o out/styles.css",
-    "start": "next start -p $PORT",
+    "buildCommand": "npm install && npm run build",
+    "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
