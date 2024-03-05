@@ -5,9 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build && postcss styles -o out/styles.css",
-    "buildCommand": "npm install && next build && npm run postcss",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "next start"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
