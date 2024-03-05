@@ -9,7 +9,7 @@ const Footer = () =>{
         <footer className={`${style.container} bg-gradient-to-b from-cards_bg to-transparent`}>
             <div className={style.container__imgLogo}>
                 <Link href="/">
-                    <Image src={imgLogo.src} alt="Logo" />
+                    <img src={imgLogo.src} alt="Logo" />
                 </Link>
             </div>
 

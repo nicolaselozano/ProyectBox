@@ -6,7 +6,7 @@ import Image from "next/image";
 const NavBar = () => {
   return (
     <nav className={`${style.container} bg-gradient-to-b from-cards_bg to-transparent`}>
-      <Image className="h-16" src={imgLogo.src} alt="Logo My Proyects" />
+      <img className="h-16" src={imgLogo.src} alt="Logo My Proyects" />
       <div className={style.container__dropMenu}>
         <DropMenu/>
       </div>
