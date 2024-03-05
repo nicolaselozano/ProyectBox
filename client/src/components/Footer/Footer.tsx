@@ -1,6 +1,7 @@
 import Link from "next/link";
 import imgLogo from "../../../asset/OIG4.webp";
 import style from "./Footer.module.css";
+import Image from "next/image";
 
 const Footer = () =>{
 
@@ -8,7 +9,7 @@ const Footer = () =>{
         <footer className={`${style.container} bg-gradient-to-b from-cards_bg to-transparent`}>
             <div className={style.container__imgLogo}>
                 <Link href="/">
-                    <img src={imgLogo.src} alt="Logo" />
+                    <Image src={imgLogo.src} alt="Logo" />
                 </Link>
             </div>
 

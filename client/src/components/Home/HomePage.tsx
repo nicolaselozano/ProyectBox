@@ -4,6 +4,7 @@ import homeImg_button from "../../../asset/home_pet_button.webp";
 import homeImg_pet from "../../../asset/pet_compu.webp";
 import style from "./HomePage.module.css";
 import Carrusel from "./Carrusel";
+import Image from "next/image";
 
 const HomePage = () => {
 
@@ -14,7 +15,7 @@ const HomePage = () => {
                 <a href="/pages/AboutMe/">
                     <button>Sobre Mi</button>
                 </a>
-                <img src={homeImg_button.src} alt="Pet_button" />
+                <Image src={homeImg_button.src} alt="Pet_button" />
             </div>
             <div className={`${style.container__dialog_text} text-violet_text`}>
                 <h1>Conoce mis Proyectos</h1>
@@ -23,13 +24,13 @@ const HomePage = () => {
                 </p>
             </div>
             <div className={style.container__pet}>
-                <img src={homeImg_pet.src} alt="Pet_pointing" />
+                <Image src={homeImg_pet.src} alt="Pet_pointing" />
             </div>
             <div className={style.container__dialog_imgDialog}>
-                <img src={homeImg_dialog.src} alt="home_dialog" />
+                <Image src={homeImg_dialog.src} alt="home_dialog" />
             </div>
             <div>
-                <img src={homeImg.src} alt="home_image" />
+                <Image src={homeImg.src} alt="home_image" />
             </div>
 
             {/* carrusel */}

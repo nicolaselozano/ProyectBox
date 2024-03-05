@@ -14,14 +14,14 @@ export const Product = createSlice({
   initialState: {
     allProduct: [],
     loading:true,
-    error:{}
+    error:{message:""}
   },
   reducers: {
     reset:() =>{
       return {
         allProduct: [],
         loading:true,
-        error:{}
+        error:{message:""}
       }
     },
     addProduct: (state,action) => {
@@ -29,7 +29,7 @@ export const Product = createSlice({
     },
     setLoadingTrue:(state) => {
       state.loading = true
-      state.error= {}
+      state.error= {message:""}
     },
     setLoadingFalse:(state) => {
       state.loading = false

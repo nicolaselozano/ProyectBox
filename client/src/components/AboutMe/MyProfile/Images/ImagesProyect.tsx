@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 interface IImage {
@@ -12,7 +13,7 @@ const ImagesProyect: React.FC<{ imgs: IImage[] }> = ({ imgs }) => {
       {imgs.length ? (
         imgs.map((img, key) => (
           <div key={key} className="relative m-5 overflow-hidden">
-            <img
+            <Image
             src={img.url}
             alt={`image_${key}`}
             className="w-full h-full"

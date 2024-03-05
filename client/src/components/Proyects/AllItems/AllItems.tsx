@@ -4,6 +4,15 @@ import Item from "../Item/Item";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { getAllProducts, resetAllProducts } from "@/redux/services/getAllProducts";
+import { UUID } from "crypto";
+
+export interface Product {
+    id:UUID
+    name:string,
+    image:string,
+    url:string,
+    role:string
+}
 
 const AllItems = () => {
 
@@ -23,7 +32,7 @@ const AllItems = () => {
             <div className={style.container}>
                 
                 {
-                    allProduct.length ? allProduct.map((proyect,key) => 
+                    allProduct.length ? allProduct.map((proyect:Product,key) => 
                     <a href={proyect.url} className="" target="_blank" key={key}>
                         <div className={`${style.container__item} bg-cards_bg 
             border border-solid border-cards_border border-4 rounded-md animate-borde_shine`}>
