@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && postcss styles -o out/styles.css",
+    "build": "install && next build && postcss styles -o out/styles.css",
     "start": "next start"
   },
   "dependencies": {
