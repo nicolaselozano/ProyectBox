@@ -15,7 +15,7 @@ const HomePage = () => {
                 <a href="/pages/AboutMe/">
                     <button>Sobre Mi</button>
                 </a>
-                <Image src={homeImg_button.src} alt="Pet_button" />
+                <img src={homeImg_button.src} alt="Pet_button" />
             </div>
             <div className={`${style.container__dialog_text} text-violet_text`}>
                 <h1>Conoce mis Proyectos</h1>
@@ -24,13 +24,13 @@ const HomePage = () => {
                 </p>
             </div>
             <div className={style.container__pet}>
-                <Image src={homeImg_pet.src} alt="Pet_pointing" />
+                <img src={homeImg_pet.src} alt="Pet_pointing" />
             </div>
             <div className={style.container__dialog_imgDialog}>
-                <Image src={homeImg_dialog.src} alt="home_dialog" />
+                <img src={homeImg_dialog.src} alt="home_dialog" />
             </div>
             <div>
-                <Image src={homeImg.src} alt="home_image" />
+                <img src={homeImg.src} alt="home_image" />
             </div>
 
             {/* carrusel */}

@@ -18,7 +18,7 @@ const Item = (props:Item) => {
     return(
 
         <div className="m-4">
-            <Image className={`${style.image} max-w-48`} src={image} alt={name} />
+            <img className={`${style.image} max-w-48`} src={image} alt={name} />
             <div className={style.details}>
             <h2 className="text-xl font-semibold mb-2">{name}</h2>
             <p className="mb-2">Url : {url}</p>

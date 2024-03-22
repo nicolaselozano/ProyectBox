@@ -1,4 +1,5 @@
 import Button_Nav from "../Button/Button_Nav";
+import LoginButton from "../Login/LoginButton";
 import style from "./NavOptions.module.css";
 
 const NavOptions = () => {
@@ -11,7 +12,9 @@ const NavOptions = () => {
         <li>
           <Button_Nav to="/pages/proyects">Proyectos</Button_Nav>
         </li>
-        {/* Agrega más enlaces según sea necesario */}
+        <li>
+          <LoginButton/>
+        </li>
       </ul>
     </div>
   );
