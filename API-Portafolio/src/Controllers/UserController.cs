@@ -1,15 +1,20 @@
+using System.Runtime.CompilerServices;
 using ApplicationDb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Models;
+using Users.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class UserController : ControllerBase
 {
+    private readonly IUserServices _userServices;
     private readonly ApplicationDbContext _context;
 
-    public UserController(ApplicationDbContext context)
-    {
+    public UserController(ApplicationDbContext context,IUserServices userServices)
+    {   
+        _userServices=userServices;
         _context=context;
     }
 
@@ -42,29 +47,31 @@ public class UserController : ControllerBase
             return StatusCode(500, "Error interno del servidor");
         }
     }
+    
+
 
     [HttpPost]
-    public IActionResult AddUser(User u)
+    [GetToken]
+    public IActionResult AddUser([FromBody] UserDTO u)
     {
-        Console.WriteLine("Post User");
         try
         {
-            if(ModelState.IsValid)
+            if(u != null)
             {
-                _context.Users.Add(u);
-                _context.SaveChanges();
 
-                return CreatedAtAction(nameof(GetUsers),null);
+                User response = _userServices.AddUser(u);
+
+                return Ok(response);
             }
             else
             {
-                throw new Exception("ModelState is Invalid");
+                throw new Exception("Datos no compatibles con la creacion del usuario");
             }
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Error al obtener usuarios: {ex.Message}");
-            return StatusCode(500, "Error interno del servidor");
+            return StatusCode(500, ex.Message);
         }
     }
 

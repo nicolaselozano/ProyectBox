@@ -20,7 +20,7 @@ namespace Proyects.Services
         string ActiveProyect(Guid id);
     }
 
-        public class ProyectService : IProyectService
+    public class ProyectService : IProyectService
     {
         private readonly ApplicationDbContext _context;
 
