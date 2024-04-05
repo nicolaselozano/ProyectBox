@@ -162,7 +162,6 @@ namespace Proyects.Services
                         var entityImage = _context.ProyectImages.Add(
                             new ProyectImage
                             {
-                                ProyectId = id,
                                 Url = img
                             });
 

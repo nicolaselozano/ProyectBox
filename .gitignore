@@ -1,4 +1,8 @@
+#VARS.TS
+vars.ts
+
 # Next.js
+next.config.js
 .next/
 out/
 node_modules/

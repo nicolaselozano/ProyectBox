@@ -10,7 +10,7 @@ import { getAllProducts } from "@/redux/services/getAllProducts";
 import Item from "@/components/Proyects/Item/Item";
 import ImagesProyect from "./Images/ImagesProyect";
 import { useInView } from "react-intersection-observer";
-import Image from "next/image";
+import { Product } from "@/components/Proyects/AllItems/AllItems";
 
 interface IProject {
     id: string;
@@ -108,7 +108,7 @@ const MyProfile = () => {
                                 <div className={`m-5 bg-cards_bg 
                                 border border-solid border-profile_border border-4 rounded-md`}>
                                     <div className="flex flex-col justify-around">
-                                        <Item proyect={proyect} />
+                                        <Item proyect={proyect as Product} />
                                         <ImagesProyect imgs={proyect.imgs}/>
                                     </div>
                                     <div className="m-4">

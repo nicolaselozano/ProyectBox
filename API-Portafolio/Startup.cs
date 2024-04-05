@@ -9,6 +9,7 @@ using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using Reviews.Services;
 
 
 public class Startup
@@ -29,6 +30,7 @@ public class Startup
         services.AddControllers();
         services.AddScoped<IProyectService, ProyectService>();
         services.AddScoped<IUserServices, UserService>();
+        services.AddScoped<IReviewServices, ReviewService>();
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
 
         services.AddControllers().AddJsonOptions(options =>
@@ -67,6 +69,7 @@ public class Startup
         options.Authority = "https://dev-v2roygalmy6qyix2.us.auth0.com/"; // Replace with your Auth0 domain
         options.Audience = "https://PORTAFOLIO_API.com"; // Replace with your API audience
         });
+        services.AddHttpContextAccessor();
 
 
         services.AddControllers().AddJsonOptions(options =>

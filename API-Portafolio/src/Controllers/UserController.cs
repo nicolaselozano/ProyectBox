@@ -1,8 +1,7 @@
-using System.Runtime.CompilerServices;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text.Json;
 using ApplicationDb.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Users.Models;
 using Users.Services;
 
 [ApiController]
@@ -49,23 +48,27 @@ public class UserController : ControllerBase
     }
     
 
-
+    //login
     [HttpPost]
     [GetToken]
-    public IActionResult AddUser([FromBody] UserDTO u)
+    [CheckPermissionM]
+    public IActionResult AddUser()
     {
         try
         {
-            if(u != null)
+            
+            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+
+            if (tokenData != null)
             {
 
-                User response = _userServices.AddUser(u);
+                var response = _userServices.AddUser(tokenData);
 
-                return Ok(response);
+                return Ok("User added successfully");
             }
             else
             {
-                throw new Exception("Datos no compatibles con la creacion del usuario");
+                throw new Exception("Authorization header missing or invalid");
             }
         }
         catch (Exception ex)

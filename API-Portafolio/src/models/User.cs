@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Reviews.Model;
 using UserProyects.Models;
 
 namespace Users.Models
@@ -12,12 +13,14 @@ namespace Users.Models
         public string Password {get; set;}
         public bool isDeleted { get; set; } = false;
         public List<UserProyect> UserProyects {get;} = new List<UserProyect>();
+        public ICollection<Review> Reviews { get; set; }
 
         public User()
         {
             Name="user";
             Email="email";
             Password="pass";
+            Reviews = new List<Review>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using ApplicationDb.Models;
 using Users.Models;
 
@@ -5,7 +6,7 @@ namespace Users.Services
 {
     public interface IUserServices
     {
-        User AddUser(UserDTO user);
+        User AddUser(JwtSecurityToken jwt);
     }
 
     public class UserService:IUserServices
@@ -18,28 +19,46 @@ namespace Users.Services
         }
 
 
-        public User AddUser(UserDTO user)
-        {
+        public User AddUser(JwtSecurityToken jwt)
+        {   
 
-            User uExist = _context.Users.FirstOrDefault(u => u.Email == user.Email);
-
-            if(uExist !=null)
+            try
             {
-                throw new Exception("El email ya esta registrado, Registrese con otro email");
+                var email = jwt.Claims.First(claim => claim.Type == "custom_email_claim").Value;
+                var name = jwt.Claims.FirstOrDefault(claim => claim.Type == "custom_name_claim")?.Value ?? email;
+                
+                Console.WriteLine("Hello");
+
+                UserDTO newUser = new UserDTO{
+                    Email = email,
+                    Name = name ?? email
+                };
+
+                User uExist = _context.Users.FirstOrDefault(u => u.Email == newUser.Email);
+
+                if(uExist !=null)
+                {
+                    throw new Exception("El email ya esta registrado, Registrese con otro email");
+                }
+
+                User user = new User
+                {
+                    Email = newUser.Email,
+                    Name = newUser.Name
+                };
+
+                _context.Users.Add(user);
+
+                _context.SaveChanges();            
+
+                return user;
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
             }
 
-            User newUser = new User
-            {
-                Email = user.Email,
-                Name = user.Name,
-                Password = user.Password,
-            };
-
-            _context.Users.Add(newUser);
-
-            _context.SaveChanges();            
-
-            return newUser;
 
         }
     }

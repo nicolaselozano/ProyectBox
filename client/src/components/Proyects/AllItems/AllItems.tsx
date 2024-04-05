@@ -5,13 +5,15 @@ import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { getAllProducts, resetAllProducts } from "@/redux/services/getAllProducts";
 import { UUID } from "crypto";
+import Link from "next/link";
 
 export interface Product {
     id:UUID
     name:string,
     image:string,
     url:string,
-    role:string
+    role:string,
+    description:string
 }
 
 const AllItems = () => {
@@ -33,12 +35,15 @@ const AllItems = () => {
                 
                 {
                     allProduct.length ? allProduct.map((proyect:Product,key) => 
-                    <a href={proyect.url} className="" target="_blank" key={key}>
+                    <Link href={{
+                            pathname:"/pages/detail",
+                            query:{id:proyect.id}
+                        }} key={key}>
                         <div className={`${style.container__item} bg-cards_bg 
-            border border-solid border-cards_border border-4 rounded-md animate-borde_shine`}>
+                            border border-solid border-cards_border border-4 rounded-md animate-borde_shine`}>
                             <Item proyect={proyect} />
                         </div>
-                    </a>
+                    </Link>
                     ): <h1>Loading...</h1>
                 }
             </div>

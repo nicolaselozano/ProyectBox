@@ -1,9 +1,10 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
+using System;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using RestSharp;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
 {
@@ -22,10 +23,9 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
             request.AddParameter("grant_type", "authorization_code");
             request.AddParameter("client_id", $"{clientId}");
             request.AddParameter("client_secret", $"{clientSecret}");
-            request.AddParameter("scope", $"user:edit read:roles update:users create:role_members");
             request.AddParameter("code", $"{code}");
             request.AddParameter("redirect_uri", "http://localhost:3000/callback");
-
+            
             var response = await client.ExecuteAsync(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
@@ -33,8 +33,6 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
                 string jsonResponse = response.Content;
                 JObject responseObject = JObject.Parse(jsonResponse);
                 var accessToken = responseObject["access_token"];
-
-                Console.WriteLine(accessToken);
 
                 if (accessToken != null)
                 {
@@ -53,4 +51,4 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
             context.Result = new UnauthorizedResult();
         }
     }
-}
+}    
