@@ -1,4 +1,4 @@
-public class AddReviewDTO
+public class ReviewDTO
 {
     public bool like {get; set;}
     public Guid UserId {get; set;}

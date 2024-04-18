@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using ApplicationDb.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Users.Services;
 
@@ -52,6 +53,7 @@ public class UserController : ControllerBase
     [HttpPost]
     [GetToken]
     [CheckPermissionM]
+    [TokenValidationMiddleware]
     public IActionResult AddUser()
     {
         try

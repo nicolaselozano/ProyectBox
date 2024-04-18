@@ -7,6 +7,7 @@ namespace Users.Services
     public interface IUserServices
     {
         User AddUser(JwtSecurityToken jwt);
+        User GetUser(Guid id);
     }
 
     public class UserService:IUserServices
@@ -18,7 +19,20 @@ namespace Users.Services
             _context = context;
         }
 
+        public User GetUser(Guid id)
+        {
+            try
+            {
+                User user = _context.Users.FirstOrDefault(u => u.Id == id);
 
+                return user;
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+        }
         public User AddUser(JwtSecurityToken jwt)
         {   
 

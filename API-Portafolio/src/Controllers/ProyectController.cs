@@ -21,8 +21,6 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            Console.WriteLine("GET");
-
             int skip = (page - 1) * pageSize;
 
             var proyects = _proyectService.GetProyects(page,pageSize);

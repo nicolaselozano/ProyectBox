@@ -23,22 +23,6 @@ namespace ApplicationDb.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Name)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Url)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Image)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Role)
-                .HasColumnType("varchar");
-
             modelBuilder.Entity<UserProyect>()
                 .HasKey(up => new { up.ProyectsId, up.UserId });
 
@@ -54,20 +38,15 @@ namespace ApplicationDb.Models
                 
             modelBuilder.Entity<ProyectImage>()
                 .HasOne(p => p.Proyect);
+                
             modelBuilder.Entity<Review>()
-                .HasOne(r => r.Proyect)
+                .HasOne(r => r.Proyect) 
                 .WithMany()
                 .HasForeignKey(r => r.PId);
 
-
             modelBuilder.Entity<Review>()
-                .HasOne(r => r.User)
+                .HasOne(r => r.User) 
                 .WithMany(u => u.Reviews);
-
-            modelBuilder.Entity<User>()
-                .HasMany(u => u.Reviews)
-                .WithOne(r => r.User);
-
         }
     }
 }

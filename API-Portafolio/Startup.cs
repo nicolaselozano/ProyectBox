@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using Reviews.Services;
-
+using System.Text.Json.Serialization;
 
 public class Startup
 {
@@ -32,11 +32,13 @@ public class Startup
         services.AddScoped<IUserServices, UserService>();
         services.AddScoped<IReviewServices, ReviewService>();
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
-
-        services.AddControllers().AddJsonOptions(options =>
+        services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 
+        services.AddControllersWithViews()
+        .AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.ReferenceHandler = null;
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
         });
+        
         services.AddDbContext<ApplicationDbContext>(opt =>
         {
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
@@ -60,15 +62,24 @@ public class Startup
                 }); 
         });
         
-        services.AddAuthentication(options =>
-        {
-        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        }).AddJwtBearer(options =>
-        {
-        options.Authority = "https://dev-v2roygalmy6qyix2.us.auth0.com/"; // Replace with your Auth0 domain
-        options.Audience = "https://PORTAFOLIO_API.com"; // Replace with your API audience
-        });
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.Authority = "https://dev-v2roygalmy6qyix2.us.auth0.com/";
+                options.Audience = "https://PORTAFOLIO_API.com";
+                options.RequireHttpsMetadata = false; 
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    ValidateIssuer = true,
+                    ValidIssuer = "https://dev-v2roygalmy6qyix2.us.auth0.com/", 
+                    ValidateAudience = true,
+                    ValidAudience = "https://PORTAFOLIO_API.com",
+                    ValidateLifetime = true
+                };
+            });
+        
+
         services.AddHttpContextAccessor();
 
 
@@ -95,7 +106,6 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portafolio .NET"));
         }
-        
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();

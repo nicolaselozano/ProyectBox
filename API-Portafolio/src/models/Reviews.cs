@@ -20,6 +20,7 @@ namespace Reviews.Model
         public Guid PId { get; set; }
 
         public Proyect Proyect { get; set; }
+        public bool isDeleted { get; set; } = false;
     }
 
 
