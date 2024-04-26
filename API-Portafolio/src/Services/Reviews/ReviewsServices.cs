@@ -12,8 +12,8 @@ namespace Reviews.Services
     public interface IReviewServices
     {
         Review AddReview(ReviewDTO review);
-        Review GetReviewUser(Guid PId,Guid UId);
-        Review UpdateReview(ReviewDTO UId);
+        bool GetReviewUser(Guid PId,string userEmail);
+        Review UpdateReview(ReviewDTO review);
         int GetReviewCount(Guid PId);
         Review DeleteReview(Guid PId, Guid UId);
         List<Review> GetProyectReviews(Guid PId,int page,int pageSize);
@@ -33,10 +33,18 @@ namespace Reviews.Services
 
             try
             {
-
-                User userExist = _context.Users.FirstOrDefault(u => !u.isDeleted && u.Id == review.UserId);
                 
-                Proyect proyectExist = _context.Proyects.FirstOrDefault(p => !p.isDeleted && p.Id == review.ProyectId);
+
+                User userExist = _context.Users.FirstOrDefault(u => !u.isDeleted && u.Email == review.emailUser);
+                //review existe = update
+                Review reviewExist = _context.Review.FirstOrDefault(r => r.User.Email == review.emailUser && r.PId == review.proyectId);
+
+                if (reviewExist != null)
+                {   
+                    return UpdateReview(review);
+                }
+                
+                Proyect proyectExist = _context.Proyects.FirstOrDefault(p => !p.isDeleted && p.Id == review.proyectId);
 
                 if (userExist == null || proyectExist == null)
                 {
@@ -91,7 +99,7 @@ namespace Reviews.Services
         {
             try
             {
-                Review review = _context.Review.First(r => !r.isDeleted && r.User.Id == updateReview.UserId && r.Proyect.Id == updateReview.ProyectId);
+                Review review = _context.Review.First(r => !r.isDeleted && r.User.Email == updateReview.emailUser && r.Proyect.Id == updateReview.proyectId);
                 if (review == null)
                 {
                     throw new Exception("No se encontro una review con los datos de id recibidos");
@@ -110,17 +118,19 @@ namespace Reviews.Services
                 throw;
             }
         }
-        public Review GetReviewUser (Guid PId,Guid UId)
+        public bool GetReviewUser (Guid PId,string userEmail)
         {
             try
             {
-               
-                Review review = _context.Review
-                    .Include(r => r.User)
-                    .Include(r => r.Proyect)
-                    .First(r => !r.isDeleted && r.User.Id == UId && r.Proyect.Id == PId);
+                Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
 
-                Console.WriteLine($"Review: {review.Like}");
+                if (reviewExist == null) throw new Exception("Error no se encontro");
+
+                bool review = _context.Review
+                    .Any(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
+
+
+                Console.WriteLine($"Review: {review}");
                 if (review == null)
                 {
                     return review;
@@ -144,7 +154,7 @@ namespace Reviews.Services
             try
             {
                 int count = _context.Review
-                .Where(r => r.Proyect.Id == PId && !r.isDeleted)
+                .Where(r => r.Proyect.Id == PId && !r.isDeleted && r.Like)
                 .Count();
 
                 return count;

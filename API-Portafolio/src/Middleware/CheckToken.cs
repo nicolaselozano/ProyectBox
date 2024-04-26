@@ -7,43 +7,35 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol;
 
 public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 {
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        string authorizationHeader = context.HttpContext.Request.Headers["Authorization"];
-        if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
+        var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+        if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
         {
-            string token = authorizationHeader.Substring("Bearer ".Length);
+            string token = authorizationHeader.Substring("Bearer ".Length).Trim();
+    
+            await ValidateTokenAsync(token);
 
-            var validationResult = await ValidateTokenAsync(token);
+            var handler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
 
-            var claims = validationResult.Claims;
-            if (claims != null)
-            {
-                var claimList = new List<Claim>();
+            context.HttpContext.Items.Add("tokendata",jwtToken);
 
-                var usernameClaim = claims.FirstOrDefault(c => c.Type == "username");
-                if (usernameClaim != null)
-                {
-                    string username = usernameClaim.Value;
-                    Console.WriteLine("HOLA SOSOSOSOSO", username);
-                    claimList.Add(new Claim(ClaimTypes.Name, username));
-                }
-
-                context.HttpContext.User.AddIdentity(new ClaimsIdentity(claimList, "Bearer"));
-            }
         }
     }
 
 
-    private Task<ClaimsPrincipal> ValidateTokenAsync(string token)
+    private Task<TokenValidationResult> ValidateTokenAsync(string token)
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
+            Console.WriteLine($"SOY EL TOKEN {token}");
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
@@ -54,10 +46,7 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
                 ValidateLifetime = true
             };
 
-            // Intenta validar el token
-            ClaimsPrincipal claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
-            
-            // Si la validación tiene éxito, devuelve un resultado válido con las reclamaciones del token
+            TokenValidationResult claimsPrincipal = tokenHandler.ValidateTokenAsync(token, validationParameters).Result;
             return Task.FromResult(claimsPrincipal);
         }
         catch (Exception ex)

@@ -7,7 +7,7 @@ namespace Users.Services
     public interface IUserServices
     {
         User AddUser(JwtSecurityToken jwt);
-        User GetUser(Guid id);
+        User GetUser(string email);
     }
 
     public class UserService:IUserServices
@@ -19,11 +19,15 @@ namespace Users.Services
             _context = context;
         }
 
-        public User GetUser(Guid id)
+        public User GetUser(string email)
         {
             try
-            {
-                User user = _context.Users.FirstOrDefault(u => u.Id == id);
+            {  
+                Console.WriteLine(email);
+
+                User user = _context.Users.First( u => u.Email == email);
+
+                Console.WriteLine($" {user.Name} {user.Email}");
 
                 return user;
             }
@@ -52,7 +56,7 @@ namespace Users.Services
 
                 if(uExist !=null)
                 {
-                    throw new Exception("El email ya esta registrado, Registrese con otro email");
+                    throw new Exception("El email ya esta registrado, Registrese con otro email y no con :" + uExist.Email.ToString());
                 }
 
                 User user = new User

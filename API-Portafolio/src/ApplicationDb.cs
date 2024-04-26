@@ -45,8 +45,7 @@ namespace ApplicationDb.Models
                 .HasForeignKey(r => r.PId);
 
             modelBuilder.Entity<Review>()
-                .HasOne(r => r.User) 
-                .WithMany(u => u.Reviews);
+                .HasOne(r => r.User);
         }
     }
 }

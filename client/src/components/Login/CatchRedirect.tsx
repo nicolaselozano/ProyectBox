@@ -10,13 +10,8 @@ const CatchRedirect = (props) => {
 
                 bandera = false;
                 
-              const response = await fetch(`http://localhost:5019/api/user?code=${props.code}`,{
-                method:"POST",
-                body:JSON.stringify({
-                  "Name": "Juan",
-                  "Email": "Juan@gmail.com",
-                  "Password": "321"
-                })
+              const response = await fetch(`http://localhost:5019/api/user/login?code=${props.code}`,{
+                method:"GET"
               });
       
               if (!response.ok) {
@@ -24,6 +19,11 @@ const CatchRedirect = (props) => {
               }
       
               const data = await response.json();
+
+              localStorage.setItem("token",data.token);
+              localStorage.setItem("email",data.user.email);
+              localStorage.setItem("userId",data.user.id);
+
               console.log('Data:', data);
             }
           } catch (error) {

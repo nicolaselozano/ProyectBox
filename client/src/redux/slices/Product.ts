@@ -1,4 +1,4 @@
-import { createSlice,PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { UUID } from 'crypto';
 
 interface Product {
@@ -43,11 +43,11 @@ export const Product = createSlice({
 });
 
 export const { 
-    addProduct,
-    setLoadingTrue,
-    setLoadingFalse,
-    setError,
-    reset
- } = Product.actions;
+  addProduct,
+  setLoadingTrue,
+  setLoadingFalse,
+  setError,
+  reset
+} = Product.actions;
 
 export default Product.reducer;

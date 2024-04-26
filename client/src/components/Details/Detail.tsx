@@ -7,31 +7,83 @@ import { getDetail, resetDetail } from "@/redux/services/Detail/getDetail";
 import { Product } from "../Proyects/AllItems/AllItems";
 
 import style from "./Detail.module.css";
+import { setReviews } from "@/redux/services/Reviews/setReviews";
+import { getProyectReview } from "@/redux/services/Reviews/getProyectReview";
 
 interface IId {
-    id:string
+    id:UUID
 }
 
 const CDetail = ({id}:IId) => {
 
-    const {product}:{product:Product | {}} = useAppSelector(state => state.detailReducer);
+    const {product,reviews}:{product:Product | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
 
-    const [likecount,setLikeCount] = useState(false);
+    const [actualR, setActualR] = useState(0);
 
     const dispatch = useDispatch<AppDispatch>();
 
-    useEffect(() =>{
+    // -1 =en db 0 = sin modificar | 1 = like | 2 = dislike
+    const [buttonStatus,setButtonStatus] = useState(0)
+
+    useEffect(() => {
+        
+        const email = localStorage.getItem("email");
+        
         dispatch(getDetail(id));
 
-        return () => dispatch(resetDetail);
-    },[dispatch,id])
+        const getLikeCountUser = async () => {
+            
+            const response = await getProyectReview(id,email);
 
-    const handleLikeButton = () =>{
+            if(response) setButtonStatus(-1);
+            else setButtonStatus(2);
+        }
+        
+        getLikeCountUser();
 
-        setLikeCount(likecount);
+        return () => {
+    
+            dispatch(resetDetail);
+    
+        };
+    },[dispatch,id]); 
 
-    }
+    const handleLikeButton = () => {
+        if(buttonStatus === -1){
 
+            const email = localStorage.getItem("email");
+
+            setActualR(reviews);
+            dispatch(setReviews(id,email,false));
+            setButtonStatus(2);
+        }
+
+        if(buttonStatus === 1){
+
+            const email = localStorage.getItem("email");
+
+            setActualR(reviews);
+            setButtonStatus(0);
+            dispatch(setReviews(id,email,false));
+        }
+
+        if(buttonStatus === 2){
+            const email = localStorage.getItem("email");
+
+            setActualR(reviews + 1);
+            setButtonStatus(1);
+            dispatch(setReviews(id,email,true));
+        }
+
+        if(buttonStatus === 0){
+            const email = localStorage.getItem("email");
+
+            setActualR(reviews + 1);
+            setButtonStatus(1);
+            dispatch(setReviews(id,email,true));
+        }
+        
+    };
     return (
         <div className="flex justify-center">
             {
@@ -48,10 +100,11 @@ const CDetail = ({id}:IId) => {
                         <span className="sr-only">Icon description</span>
                     </button>
 
-                    <span className="ml-5">{200}</span>
+                    <span className="ml-5">{actualR ? actualR : reviews}</span>
 
                 </div>
                 <Item proyect={product as Product} />
+                
                 <h1 className="ml-4">{product.description}</h1>
             </div> : <button disabled type="button" className="w-32 text-white bg-general_bg  focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 dark:bg-general_bg inline-flex items-center">
             <svg aria-hidden="true" role="status" className="inline w-4 h-4 me-3 text-white animate-spin" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

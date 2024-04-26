@@ -15,6 +15,7 @@ public class CheckPermissionM:Attribute,IAsyncAuthorizationFilter
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
             {
                 var token = authorizationHeader.Substring("Bearer ".Length).Trim();
+
                 var handler = new JwtSecurityTokenHandler();
                 JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
 
@@ -22,10 +23,6 @@ public class CheckPermissionM:Attribute,IAsyncAuthorizationFilter
                 {
                     Console.WriteLine($"{claim.Type}: {claim.Value}");
                 }   
-
-                var data = JsonSerializer.Serialize(jwtToken);
-
-                context.HttpContext.Items.Add("tokendata",jwtToken);
 
                 return;
 

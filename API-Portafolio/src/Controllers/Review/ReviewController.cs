@@ -15,13 +15,13 @@ public class ReviewController:ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetReview([FromQuery] Guid PId, [FromQuery] Guid UId)
+    public IActionResult GetReview([FromQuery] Guid PId, [FromQuery] string userEmail)
     {
         try
         {
 
             
-            var review = _reviewService.GetReviewUser(PId, UId);
+            bool review = _reviewService.GetReviewUser(PId, userEmail);
 
             return Ok(review);
 
@@ -52,15 +52,19 @@ public class ReviewController:ControllerBase
             return StatusCode(500,ex.Message);
         }
     }
+
     [HttpPost]
+    [TokenValidationMiddleware]
     public IActionResult AddReview([FromBody] ReviewDTO newReview)
     {
 
         try
         {
+            Console.WriteLine($"AddReview: {newReview.emailUser}");
             var entity = _reviewService.AddReview(newReview);
 
             return Ok(entity);
+            
         }
         catch (Exception ex)
         {

@@ -3,12 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 interface DetailState {
     product: Product | {};
+    reviews: number | null;
     loading: false | true;
     error: any
 }
 
 const initialState:DetailState ={
     product:{},
+    reviews:null,
     loading:false,
     error:{}
 }
@@ -21,11 +23,13 @@ export const Detail = createSlice({
             return {
                 product:{},
                 loading:false,
-                error:{}
+                error:{},
+                reviews:null,
             }
         },
         setProduct: (state,action) => {
-            state.product = action.payload;
+            state.product = action.payload.product;
+            state.reviews = action.payload.reviews;
             state.loading = false;
         },
         setLoading: (state,action) => {

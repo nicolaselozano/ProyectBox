@@ -3,6 +3,7 @@ using System.Text.Json;
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Users.Models;
 using Users.Services;
 
 [ApiController]
@@ -58,7 +59,7 @@ public class UserController : ControllerBase
     {
         try
         {
-            
+            Console.WriteLine("Hola");
             var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
 
             if (tokenData != null)
@@ -66,7 +67,7 @@ public class UserController : ControllerBase
 
                 var response = _userServices.AddUser(tokenData);
 
-                return Ok("User added successfully");
+                return Ok(response);
             }
             else
             {
@@ -77,6 +78,46 @@ public class UserController : ControllerBase
         {
             Console.WriteLine($"Error al obtener usuarios: {ex.Message}");
             return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpGet("login")]
+    [GetToken]
+    [CheckPermissionM]
+    [TokenValidationMiddleware]
+    public IActionResult GetUserLogin()
+    {
+        try
+        {
+            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+            Console.WriteLine("HOLAAAAAAAAAAAAAA");
+            if (tokenData != null)
+            {   
+                string email = tokenData.Claims.First(c => c.Type == "custom_email_claim").Value;
+            
+                User userResponse = _userServices.GetUser(email);
+
+                var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+                var tokenResponse = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+                ResponseUserDTO response = new ResponseUserDTO 
+                {
+                    token = tokenResponse,
+                    user = userResponse
+                };              
+
+                return Ok(response);
+            }
+            else
+            {
+                throw new Exception("Authorization header missing or invalid");
+            }
+
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
         }
     }
 

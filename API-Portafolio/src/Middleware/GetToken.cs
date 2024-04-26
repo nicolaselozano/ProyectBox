@@ -12,6 +12,13 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
     {
         try
         {
+            var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+
+            if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
+            {
+                return;
+            }
+            
             string clientSecret = Environment.GetEnvironmentVariable("CLIENT_SECRET");
             string clientId = Environment.GetEnvironmentVariable("CLIENT_ID");
             string audience = Environment.GetEnvironmentVariable("AUDIENCE");
