@@ -1,7 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { User } from "../Profile/ProfileNav";
 
 const CatchRedirect = (props) => {
-    let bandera = true;
+    let bandera = true; 
+    const [user,setUser] = useState<User | null>();
+   
+
+
     useEffect(() => {
         const getUser = async () => {
           try {
@@ -22,7 +27,9 @@ const CatchRedirect = (props) => {
 
               localStorage.setItem("token",data.token);
               localStorage.setItem("email",data.user.email);
-              localStorage.setItem("userId",data.user.id);
+              localStorage.setItem("user",JSON.stringify(data.user));
+
+              if(user == null) setUser(data.user as User);
 
               console.log('Data:', data);
             }
@@ -36,7 +43,9 @@ const CatchRedirect = (props) => {
       }, [props.code]);
       
     return (
-        <div></div>
+        <div>
+          {user ? <h1>Te Logueaste con exito {user?.name}</h1> : <h1>Loading...</h1>}
+        </div>
     )
 
 }
