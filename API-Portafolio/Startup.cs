@@ -30,6 +30,7 @@ public class Startup
         services.AddControllers();
         services.AddScoped<IProyectService, ProyectService>();
         services.AddScoped<IUserServices, UserService>();
+        services.AddScoped<IUtilitiesReviewServices, UtilitiesReviewServices>();
         services.AddScoped<IReviewServices, ReviewService>();
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
         services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 

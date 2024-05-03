@@ -8,10 +8,12 @@ using Reviews.Services;
 public class ReviewController:ControllerBase
 {
     private readonly IReviewServices _reviewService;
+    private readonly IUtilitiesReviewServices _utilsService;
 
-    public ReviewController(IReviewServices reviewServices)
+    public ReviewController(IReviewServices reviewService, IUtilitiesReviewServices utilsService)
     {
-        _reviewService = reviewServices;
+        _reviewService = reviewService;
+        _utilsService = utilsService;
     }
 
     [HttpGet]
@@ -55,12 +57,13 @@ public class ReviewController:ControllerBase
 
     [HttpPost]
     [TokenValidationMiddleware]
+    [CheckPermissionM("user:user")]
     public IActionResult AddReview([FromBody] ReviewDTO newReview)
     {
 
         try
         {
-            Console.WriteLine($"AddReview: {newReview.emailUser}");
+            
             var entity = _reviewService.AddReview(newReview);
 
             return Ok(entity);
@@ -90,6 +93,19 @@ public class ReviewController:ControllerBase
         {
             Console.WriteLine($"Error al obtener todas las reviews : {ex.Message}");
             return StatusCode(500,ex.Message);
+        }
+    }
+    [HttpGet("mostv")]
+    public IActionResult GetMostVotedReview()
+    {
+        try
+        {
+            return Ok(_utilsService.MostLikedProyect());
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
         }
     }
 

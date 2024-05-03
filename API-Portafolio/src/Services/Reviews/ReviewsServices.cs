@@ -36,7 +36,7 @@ namespace Reviews.Services
                 
 
                 User userExist = _context.Users.FirstOrDefault(u => !u.isDeleted && u.Email == review.emailUser);
-                //review existe = update
+
                 Review reviewExist = _context.Review.FirstOrDefault(r => r.User.Email == review.emailUser && r.PId == review.proyectId);
 
                 if (reviewExist != null)
@@ -185,5 +185,5 @@ namespace Reviews.Services
                 throw;
             }
         }
-    }
+    }    
 }

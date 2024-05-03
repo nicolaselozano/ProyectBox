@@ -20,6 +20,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [CheckPermissionM("admin:user")]
     public IActionResult GetUsers(int page = 1, int pageSize = 10)
     {
         try
@@ -53,7 +54,7 @@ public class UserController : ControllerBase
     //login
     [HttpPost]
     [GetToken]
-    [CheckPermissionM]
+    [CheckPermissionM("user:user")]
     [TokenValidationMiddleware]
     public IActionResult AddUser()
     {
@@ -122,17 +123,14 @@ public class UserController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteProyect(Guid id)
+    [CheckPermissionM("admin:user")]
+    public IActionResult DeleteUser(Guid id)
     {
         
         try
         {
-            var entity = _context.Users.Find(id);
-            if (entity != null)
-            {
-                entity.isDeleted = true;
-                _context.SaveChanges();
-            }
+            var entity = _userServices.DeleteUser(id);
+
             return Ok($"{entity?.Name ?? "Usuario"} borrado Exitosamente");
         }
         catch (Exception ex)
@@ -143,22 +141,16 @@ public class UserController : ControllerBase
     }
 
     //ACTIVAR Proyecto 
-    [HttpPut("active/{id}")]
-    public IActionResult ActiveProyect(Guid id)
+    [HttpPatch("active/{id}")]
+    [CheckPermissionM("admin:user")]
+    public IActionResult ActiveUser(Guid id)
     {
         try
         {
-            var entity = _context.Users.Find(id);
-            if (entity != null)
-            {
-                entity.isDeleted = false;
-                _context.SaveChanges();
-                return Ok($"{entity.Name} activado exitosamente");
-            }
-            else
-            {
-                return NotFound($"No se encontró el usuario con el id: {id}");
-            }
+            User entity = _userServices.ActiveUser(id);
+
+            return Ok($"{entity.Name} activado exitosamente");
+
         }
         catch (Exception ex)
         {

@@ -31,6 +31,7 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
             request.AddParameter("client_id", $"{clientId}");
             request.AddParameter("client_secret", $"{clientSecret}");
             request.AddParameter("code", $"{code}");
+            request.AddParameter("scope","read:patients");
             request.AddParameter("redirect_uri", "http://localhost:3000/callback");
             
             var response = await client.ExecuteAsync(request);
@@ -40,7 +41,6 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
                 string jsonResponse = response.Content;
                 JObject responseObject = JObject.Parse(jsonResponse);
                 var accessToken = responseObject["access_token"];
-
                 if (accessToken != null)
                 {
                     string token = accessToken.ToString();

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,19 +15,30 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 
     public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
     {
-        var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
-        if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
+        try
         {
-            string token = authorizationHeader.Substring("Bearer ".Length).Trim();
-    
-            await ValidateTokenAsync(token);
+            var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
+            {
+                string token = authorizationHeader.Substring("Bearer ".Length).Trim();
+        
+                await ValidateTokenAsync(token);
 
-            var handler = new JwtSecurityTokenHandler();
-            JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
+                var handler = new JwtSecurityTokenHandler();
+                JwtSecurityToken jwtToken = handler.ReadJwtToken(token);
 
-            context.HttpContext.Items.Add("tokendata",jwtToken);
+                Console.WriteLine($"Es valido hasta {jwtToken.ValidTo}");
 
+                context.HttpContext.Items.Add("tokendata",jwtToken);
+
+            }
         }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+
     }
 
 
@@ -39,15 +51,15 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
             var validationParameters = new TokenValidationParameters
             {
                 ValidateIssuerSigningKey = true,
-                ValidateIssuer = true,
-                ValidIssuer = "https://dev-v2roygalmy6qyix2.us.auth0.com/", 
-                ValidateAudience = true,
-                ValidAudience = "https://PORTAFOLIO_API.com",
-                ValidateLifetime = true
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("xToZmWF6p38T9phy2ISp32DE0tEfSeTUaU2omWSqcfyNjeSLS8VPF5nQCrIph3sF")),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ClockSkew = TimeSpan.Zero
             };
 
             TokenValidationResult claimsPrincipal = tokenHandler.ValidateTokenAsync(token, validationParameters).Result;
             return Task.FromResult(claimsPrincipal);
+
         }
         catch (Exception ex)
         {

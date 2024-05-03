@@ -8,6 +8,8 @@ namespace Users.Services
     {
         User AddUser(JwtSecurityToken jwt);
         User GetUser(string email);
+        User DeleteUser(Guid id);
+        User ActiveUser(Guid id);
     }
 
     public class UserService:IUserServices
@@ -25,7 +27,7 @@ namespace Users.Services
             {  
                 Console.WriteLine(email);
 
-                User user = _context.Users.First( u => u.Email == email);
+                User user = _context.Users.First( u => !u.isDeleted && u.Email == email);
 
                 Console.WriteLine($" {user.Name} {user.Email}");
 
@@ -37,6 +39,44 @@ namespace Users.Services
                 throw;
             }
         }
+
+        public User DeleteUser(Guid id)
+        {
+            try
+            {
+                User user = _context.Users.Find(id);
+                if (user != null)
+                {
+                    user.isDeleted = true;
+                    _context.SaveChanges();
+                }
+                return user;
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+        
+        public User ActiveUser(Guid id)
+        {
+            try
+            {
+                User user = _context.Users.Find(id);
+                if (user != null)
+                {
+                    user.isDeleted = false;
+                    _context.SaveChanges(); 
+                }
+                return user;
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+        }
+
         public User AddUser(JwtSecurityToken jwt)
         {   
 
