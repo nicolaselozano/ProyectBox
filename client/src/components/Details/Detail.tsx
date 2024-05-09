@@ -37,6 +37,7 @@ const CDetail = ({id}:IId) => {
             if(response){
                 setButtonStatus(1);
                 setActualR(reviews);
+                handleLikeButton();
             } else setButtonStatus(0);
         }
         
@@ -51,7 +52,7 @@ const CDetail = ({id}:IId) => {
 
     useEffect(() => {
         if(actualR == null) setActualR(reviews);
-    },[reviews,loading])
+    },[reviews,loading,dispatch])
 
     const handleLikeButton = () => {
 

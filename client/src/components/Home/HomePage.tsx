@@ -5,8 +5,21 @@ import homeImg_pet from "../../../asset/pet_compu.webp";
 import style from "./HomePage.module.css";
 import Carrusel from "./Carrusel";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { MvotedProyect } from "@/redux/services/Proyect/getMvotedProyect";
+import Item from "../Proyects/Item/Item";
 
 const HomePage = () => {
+
+    const [mostVP,setMostVP] = useState();
+
+    useEffect(() => {
+        
+        const getMostVP = async () => setMostVP(await MvotedProyect());
+
+        getMostVP();
+
+    },[])
 
     return(
         <div className={style.container__homeImg}>
@@ -34,6 +47,12 @@ const HomePage = () => {
             </div>
 
             {/* carrusel */}
+
+            <h1 className="m-5 font-semibold text-violet-400">Proyecto destacado</h1>
+            <div className="border border-violet-400 rounded">
+                
+                <h2>{mostVP?.proyect ? <Item proyect={mostVP.proyect}/> :null}</h2>                
+            </div>
 
             <Carrusel/>
 

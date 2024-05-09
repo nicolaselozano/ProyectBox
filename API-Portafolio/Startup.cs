@@ -11,6 +11,8 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using Reviews.Services;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
+using Microsoft.Extensions.Caching.Memory;
 
 public class Startup
 {
@@ -26,14 +28,46 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         
+        services.AddRateLimiter(options =>
+        {
+            options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                partitionKey: httpContext.User.Identity?.Name ?? httpContext.Request.Headers.Host.ToString(),
+                factory: partition => new FixedWindowRateLimiterOptions
+                {
+                    AutoReplenishment = true,
+                    PermitLimit = 100,
+                    QueueLimit = 0,
+                    Window = TimeSpan.FromMinutes(1)
+                })
+            );
+
+            options.OnRejected = async (context,token) => {
+                context.HttpContext.Response.StatusCode = 429;
+                if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+                {
+                    await context.HttpContext.Response.WriteAsync(
+                        $"Too many requests. Please try again after {retryAfter.TotalMinutes} minute(s). " +
+                        $"Read more about our rate limits at https://example.org/docs/ratelimiting.", cancellationToken: token);
+                }
+                else
+                {
+                    await context.HttpContext.Response.WriteAsync(
+                        "Too many requests. Please try again later. " +
+                        "Read more about our rate limits at https://example.org/docs/ratelimiting.", cancellationToken: token);
+                }
+            };
+        });
         
         services.AddControllers();
+        services.AddMemoryCache(); 
         services.AddScoped<IProyectService, ProyectService>();
         services.AddScoped<IUserServices, UserService>();
         services.AddScoped<IUtilitiesReviewServices, UtilitiesReviewServices>();
         services.AddScoped<IReviewServices, ReviewService>();
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
         services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 
+
         services.AddControllersWithViews()
         .AddJsonOptions(options =>
         {
@@ -107,9 +141,11 @@ public class Startup
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Portafolio .NET"));
         }
+        
         app.UseRouting();
         app.UseAuthentication();
         app.UseAuthorization();
+        app.UseRateLimiter();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();

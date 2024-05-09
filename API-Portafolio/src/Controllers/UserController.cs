@@ -84,7 +84,6 @@ public class UserController : ControllerBase
 
     [HttpGet("login")]
     [GetToken]
-    [CheckPermissionM]
     [TokenValidationMiddleware]
     public IActionResult GetUserLogin()
     {
