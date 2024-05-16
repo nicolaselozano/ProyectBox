@@ -139,7 +139,7 @@ public class UserController : ControllerBase
         }
     }
 
-    //ACTIVAR Proyecto 
+    //ACTIVAR Usuario
     [HttpPatch("active/{id}")]
     [CheckPermissionM("admin:user")]
     public IActionResult ActiveUser(Guid id)
