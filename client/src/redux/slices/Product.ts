@@ -15,7 +15,7 @@ export const Product = createSlice({
     MvotedProyect:{},
     allProduct: [],
     loading:true,
-    error:{message:""}
+    error:{}
   },
   reducers: {
     reset:() =>{
@@ -23,7 +23,7 @@ export const Product = createSlice({
         MvotedProyect:{},
         allProduct: [],
         loading:true,
-        error:{message:""}
+        error:{}
       }
     },
     addProduct: (state,action) => {
@@ -34,14 +34,14 @@ export const Product = createSlice({
     },
     setLoadingTrue:(state) => {
       state.loading = true;
-      state.error= {message:""};
+      state.error= {};
     },
     setLoadingFalse:(state) => {
       state.loading = false;
     },
     setError:(state,action) => {
       state.loading = false;
-      state.error= {message:action.payload.message};
+      state.error= action.payload;
     }
 
   },

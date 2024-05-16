@@ -25,7 +25,13 @@ const Carrusel = () => {
 
         return () => {dispatch(resetAllProducts)}
         
-    },[dispatch])
+    },[dispatch]);
+
+    useEffect(() => {
+      console.log(error);
+      if(error.status == 429) alert("Se hicieron muchas request");
+    },[dispatch,error.status]);
+
 
   return (
     <div className="mt-4 h-56 sm:h-64 xl:h-80 2xl:h-96">

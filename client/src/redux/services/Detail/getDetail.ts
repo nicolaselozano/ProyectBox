@@ -22,8 +22,8 @@ export const getDetail = (id:string) => async (dispatch:Dispatch)  => {
     } catch (error) {
         dispatch(reset());
         dispatch(setLoading(false));
-        dispatch(setError(error));
-        throw new Error("Error al obtner el detalle del Proyecto : " + error);
+        dispatch(setError(error.response));
+        console.error("Error al obtner el detalle del Proyecto : " + error);
     }
 
 }
@@ -41,7 +41,7 @@ const getReviews = async (id:string) => {
         return response.data;
 
     } catch (error) {
-        throw error;
+        console.error(error);
     }
 
 }

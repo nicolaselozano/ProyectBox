@@ -19,8 +19,6 @@ export const setReviews = (id:UUID,emailUser:string | null,like:boolean ) => asy
 
         const token = localStorage.getItem("token");
 
-        console.log(data, token);
-
         const headers = {
             'Authorization': `Bearer ${token}`,
             "Content-Type": "application/json"
@@ -33,7 +31,7 @@ export const setReviews = (id:UUID,emailUser:string | null,like:boolean ) => asy
         dispatch(setLoading(false));
         
     } catch (error) {
-        dispatch(setError(error));
+        dispatch(setError(error.response));
 
         console.error('Error response:', error.response);
     }

@@ -11,7 +11,7 @@ export const getUserProyects = async () => {
         return response;        
 
     } catch (error) {
-        throw new Error('Error al tomar los Proyectos del Usuario'+error);
+        console.error('Error al tomar los Proyectos del Usuario'+error);
     }
 
 }

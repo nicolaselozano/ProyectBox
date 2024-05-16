@@ -20,7 +20,7 @@ const CatchRedirect = (props) => {
               });
       
               if (!response.ok) {
-                throw new Error(`Error en la solicitud: ${response.statusText}`);
+                console.error(`Error en la solicitud: ${response.statusText}`);
               }
       
               const data = await response.json();

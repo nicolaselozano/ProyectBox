@@ -36,7 +36,7 @@ public class Startup
                 factory: partition => new FixedWindowRateLimiterOptions
                 {
                     AutoReplenishment = true,
-                    PermitLimit = 100,
+                    PermitLimit = 40,
                     QueueLimit = 0,
                     Window = TimeSpan.FromMinutes(1)
                 })
@@ -61,12 +61,14 @@ public class Startup
         
         services.AddControllers();
         services.AddMemoryCache(); 
+        // services.AddSingleton<IConfiguration>(Configuration);
         services.AddScoped<IProyectService, ProyectService>();
         services.AddScoped<IUserServices, UserService>();
         services.AddScoped<IUtilitiesReviewServices, UtilitiesReviewServices>();
         services.AddScoped<IReviewServices, ReviewService>();
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
         services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 
+        services.AddTransient<IAsyncAuthorizationFilter,CheckPermissionM>();
 
         services.AddControllersWithViews()
         .AddJsonOptions(options =>

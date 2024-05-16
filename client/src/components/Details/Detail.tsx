@@ -17,6 +17,7 @@ interface IId {
 const CDetail = ({id}:IId) => {
 
     const {product,reviews,loading}:{product:Product | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
+    const {error}:any= useAppSelector(state => state.reviewReducer);
 
     const [actualR, setActualR] = useState(reviews);
 
@@ -49,6 +50,12 @@ const CDetail = ({id}:IId) => {
         };
 
     },[dispatch,id]); 
+
+    useEffect(() => {
+        setActualR(reviews);
+        console.log(error);
+        if(error.status == 429) alert("Se hicieron muchas request");
+    },[dispatch,error.status])
 
     useEffect(() => {
         if(actualR == null) setActualR(reviews);

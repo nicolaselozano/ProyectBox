@@ -12,7 +12,7 @@ export const getProyectReview = async (PId:UUID,emailUser:string | null) => {
         return response.data;
 
     } catch (error) {
-        console.error(error);
+        console.error(error.response);
     }
 
 }
