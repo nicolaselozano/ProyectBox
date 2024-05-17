@@ -61,7 +61,7 @@ public class Startup
         
         services.AddControllers();
         services.AddMemoryCache(); 
-        // services.AddSingleton<IConfiguration>(Configuration);
+        services.AddSingleton<IConfiguration>(Configuration);
         services.AddScoped<IProyectService, ProyectService>();
         services.AddScoped<IUserServices, UserService>();
         services.AddScoped<IUtilitiesReviewServices, UtilitiesReviewServices>();
