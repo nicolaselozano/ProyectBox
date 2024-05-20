@@ -13,6 +13,7 @@ using Reviews.Services;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
+using Auth0Management;
 
 public class Startup
 {
@@ -69,6 +70,7 @@ public class Startup
         services.AddTransient<IAsyncAuthorizationFilter, GetTokenAttribute>();
         services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 
         services.AddTransient<IAsyncAuthorizationFilter,CheckPermissionM>();
+        services.AddTransient<IRolManagement,RolManagment>();
 
         services.AddControllersWithViews()
         .AddJsonOptions(options =>

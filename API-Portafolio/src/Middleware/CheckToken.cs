@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using NuGet.Protocol;
 
+//añade los datos del token al context
 public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 {
 

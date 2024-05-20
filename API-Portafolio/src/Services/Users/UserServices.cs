@@ -12,15 +12,8 @@ namespace Users.Services
         User ActiveUser(Guid id);
     }
 
-    public class UserService:IUserServices
+    public class UserService(ApplicationDbContext _context,IConfiguration configuration):IUserServices
     {
-        private readonly ApplicationDbContext _context;
-
-        public UserService(ApplicationDbContext context)
-        {
-            _context = context;
-        }
-
         public User GetUser(string email)
         {
             try
@@ -84,12 +77,15 @@ namespace Users.Services
             {
                 var email = jwt.Claims.First(claim => claim.Type == "custom_email_claim").Value;
                 var name = jwt.Claims.FirstOrDefault(claim => claim.Type == "custom_name_claim")?.Value ?? email;
+                var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value;
                 
                 Console.WriteLine("Hello");
 
                 UserDTO newUser = new UserDTO{
                     Email = email,
-                    Name = name ?? email
+                    Name = name ?? email,
+                    AuthId = idAuth0,
+                    Rol = configuration.GetSection("AUTH")["UROL"].ToString()                     
                 };
 
                 User uExist = _context.Users.FirstOrDefault(u => u.Email == newUser.Email);

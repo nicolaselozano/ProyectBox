@@ -3,7 +3,8 @@ using System.Text.Json;
 using Microsoft.OpenApi.Any;
 using NuGet.Protocol;
 
-namespace   Auth0Management
+//USAR ESTE METODO EN EL SERVICIO
+namespace  Auth0Management
 {
     public interface IRolManagement
     {

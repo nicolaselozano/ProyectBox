@@ -9,9 +9,11 @@ namespace Users.Models
     {
         [Key]
         public Guid Id {get; set;}
+        public string AuthId {get; set;}
         public string Name {get; set;}
         public string Email {get; set;}
         public string Password {get; set;}
+        public string Rol {get; set;}
         public bool isDeleted { get; set; } = false;
         [JsonIgnore]
         public List<UserProyect> UserProyects {get;} = new List<UserProyect>();
@@ -22,6 +24,8 @@ namespace Users.Models
         {
             Name="user";
             Email="email";
+            AuthId="";
+            Rol = "";
             Password="pass";
             Reviews = new List<Review>();
         }

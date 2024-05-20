@@ -20,7 +20,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [CheckPermissionM("admin:user")]
+    // [CheckPermissionM("admin:user")]
     public IActionResult GetUsers(int page = 1, int pageSize = 10)
     {
         try
@@ -35,6 +35,7 @@ public class UserController : ControllerBase
                 user.Name,
                 user.Email,
                 user.Password,
+                user.Rol,
                 user.isDeleted,
                 
                 ProductID = user.UserProyects.Select(up => up.ProyectsId).ToList()
@@ -84,13 +85,15 @@ public class UserController : ControllerBase
 
     [HttpGet("login")]
     [GetToken]
+    [CheckPermissionM("user:user",10)]
     [TokenValidationMiddleware]
     public IActionResult GetUserLogin()
     {
         try
         {
+
             var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
-            Console.WriteLine("HOLAAAAAAAAAAAAAA");
+
             if (tokenData != null)
             {   
                 string email = tokenData.Claims.First(c => c.Type == "custom_email_claim").Value;
