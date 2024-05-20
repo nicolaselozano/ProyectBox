@@ -1,0 +1,100 @@
+.container {
+    display: flex;
+    flex-direction: column;
+}
+
+.container__welcoming {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.container__welcoming_intro {
+    font-size: 3vh;
+    margin-bottom: 1vh;
+}
+
+.container__welcoming_txt  {
+    font-size: 8vh;
+}
+
+.container__welcoming_name {
+    font-size: 10vh;
+    font-weight: bolder;
+    color: rgb(128, 0, 255);
+}
+
+.container__welcoming_img {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2vh;
+}
+
+.container__welcoming_img img {
+    margin: 1vh;
+    border-radius: 8px; 
+}
+
+.container__welcoming_aboutMe {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 3vh;
+}
+
+.container__welcoming_aboutMe_pfpContainer {
+    width: 30vh;
+    height: 30vh;
+    margin: 2vh;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.container__welcoming_aboutMe_pfpImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    border-radius: 50%;
+}
+
+/* Mascota */
+.container__welcoming_pet {
+    position: absolute;
+    width: 10vh;
+    margin: 27vh 0 0 163vh;
+    overflow: hidden;
+    animation: levitante 2s ease-in-out infinite;
+}
+
+.container__welcoming_pet img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+@keyframes levitante {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@media (max-width: 767px) {
+    .container__welcoming_pet {
+        margin: 27vh 0 0 50vh;
+    }
+    .container__welcoming_name {
+        font-size: 6vh;
+    }
+    .container__welcoming_txt{
+        font-size:5vh;
+    }
+}
+

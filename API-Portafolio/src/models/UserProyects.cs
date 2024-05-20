@@ -18,6 +18,14 @@ namespace UserProyects.Models
     public User User { get; set; }
 
     [ForeignKey("ProyectsId")]
-    public Proyect Proyects { get; set; }    
+    public Proyect Proyects { get; set; }  
+    public UserProyect()
+    {
+        Proyects = new Proyect();
+        User = new User();
     }
+
+    }
+
+
 }

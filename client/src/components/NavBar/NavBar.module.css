@@ -1,13 +1,22 @@
 .container {
-    display: flex;
-    justify-content: space-between;
-    border-radius: 0 0 1rem 1rem;
-    padding: 0.4rem;
+  margin-top: -5rem;
+  position: fixed;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  border-radius: 0 0 1rem 1rem;
+  padding: 0.4rem;
+  z-index: 4;
+}
+
+.container_profile {
+  position: absolute;
+  margin : 1.3rem 0 0 4rem;
 }
 
 .container__dropMenu {
   position: absolute;
-  margin : 0 0 0 40%;
+  margin : 0 0 0 43%;
 }
   .hide_mobile {
     display: block;

@@ -1,7 +1,12 @@
+#VARS.TS
+vars.ts
+
 # Next.js
+next.config.js
 .next/
 out/
 node_modules/
+docker-compose.yml
 
 # Otros archivos generados por Next.js
 build/

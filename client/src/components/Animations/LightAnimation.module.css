@@ -1,0 +1,39 @@
+.lightcontainer {
+  margin: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 100vw;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.light {
+  position: absolute;
+  height: 100%;
+  width: 5vh;
+  animation: lightAnimation 2s linear infinite;
+}
+
+.light:nth-child(1) {
+  background: linear-gradient(to right, rgb(58, 41, 65), rgba(255, 255, 255, 0));
+}
+
+.light:nth-child(2) {
+  background: linear-gradient(to left, rgb(58, 41, 65), rgba(255, 255, 255, 0));
+  right: 0;
+  left: unset;
+}
+
+@keyframes lightAnimation {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
