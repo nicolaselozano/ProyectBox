@@ -52,10 +52,9 @@ public class UserController : ControllerBase
     }
     
 
-    //login
+    //Register
     [HttpPost]
     [GetToken]
-    [CheckPermissionM("user:user")]
     [TokenValidationMiddleware]
     public IActionResult AddUser()
     {
@@ -83,9 +82,10 @@ public class UserController : ControllerBase
         }
     }
 
+    //Login
     [HttpGet("login")]
     [GetToken]
-    [CheckPermissionM("user:user",10)]
+    [CheckPermissionM("user:user",15)]
     [TokenValidationMiddleware]
     public IActionResult GetUserLogin()
     {

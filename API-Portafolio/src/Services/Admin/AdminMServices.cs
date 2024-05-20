@@ -20,15 +20,7 @@ namespace Admin.Service
     }
 
     public class AdminMService(ApplicationDbContext _context,IConfiguration configuration,RolManagment rolManagment) : IAdminMService
-    {
-        //no hace falta hacer el contructor a partir de c# 12
-        // private readonly ApplicationDbContext _context;
-
-        // public AdminMService(ApplicationDbContext context)
-        // {
-        //     _context = context;
-        // }
-        
+    {        
         public List<User> GetAllUsers(int page,int pageSize)
         {
             try
