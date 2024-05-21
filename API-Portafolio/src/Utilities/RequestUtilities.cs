@@ -21,7 +21,7 @@ internal class RequestUtilities
             if((DateTime.Now - firstRequest) > TimeSpan.FromMinutes(time))
             {
                 Console.WriteLine("SE RESETEO EL CHECK TOKEN");
-                //reset TokenCheck
+
                 return false;
             }else{
                 return true;
