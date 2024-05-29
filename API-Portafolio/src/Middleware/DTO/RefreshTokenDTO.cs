@@ -6,7 +6,7 @@ public class RefreshTokenDTO
     public string AccessToken { get; set; }
 
     [JsonPropertyName("refresh_token")]
-    public int RefreshToken { get; set; }
+    public string RefreshToken { get; set; }
 
     [JsonPropertyName("token_type")]
     public string TokenType { get; set; }

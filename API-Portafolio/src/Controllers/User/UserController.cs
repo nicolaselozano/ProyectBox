@@ -3,6 +3,7 @@ using System.Text.Json;
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 using Users.Models;
 using Users.Services;
 
@@ -60,13 +61,21 @@ public class UserController : ControllerBase
     {
         try
         {
-            Console.WriteLine("Hola");
-            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var RToken = (RefreshTokenDTO)HttpContext.Items["refreshTokenData"];
 
             if (tokenData != null)
             {
-
-                var response = _userServices.AddUser(tokenData);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+                User user = _userServices.AddUser(token);
+                ResponseUserDTO response = new ResponseUserDTO 
+                {
+                    token = tokenData.AccessToken,
+                    user = user,
+                    refreshToken = RToken.RefreshToken
+                };              
 
                 return Ok(response);
             }
@@ -85,18 +94,22 @@ public class UserController : ControllerBase
     //Login
     [HttpGet("login")]
     [GetToken]
-    [CheckPermissionM("user:user",15)]
     [TokenValidationMiddleware]
+    // [CheckPermissionM("user:user",15)]
     public IActionResult GetUserLogin()
     {
         try
         {
-
-            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+            Console.WriteLine("ENTRO AL CONTROLADOR");
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var RToken = (RefreshTokenDTO)HttpContext.Items["refreshTokenData"];
 
             if (tokenData != null)
             {   
-                string email = tokenData.Claims.First(c => c.Type == "custom_email_claim").Value;
+                var tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+
+                string email = token.Claims.First(c => c.Type == "custom_email_claim").Value;
             
                 User userResponse = _userServices.GetUser(email);
 
@@ -106,7 +119,8 @@ public class UserController : ControllerBase
                 ResponseUserDTO response = new ResponseUserDTO 
                 {
                     token = tokenResponse,
-                    user = userResponse
+                    user = userResponse,
+                    refreshToken= RToken.RefreshToken
                 };              
 
                 return Ok(response);

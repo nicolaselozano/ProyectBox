@@ -3,26 +3,21 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace MiddlewarePBox
 {
-    interface ITokenRefresh
+    internal class TokenRefresh
     {
-        Task<RefreshTokenDTO> GetRToken(AuthorizationFilterContext context);
-        Task<TokenDTO> GetTokenWRT(AuthorizationFilterContext context,string refreshToken);
-
-    }
-    internal class TokenRefresh(IConfiguration configuration): ITokenRefresh
-    {
-        public async Task<RefreshTokenDTO> GetRToken(AuthorizationFilterContext context)
+        public static async Task<RefreshTokenDTO> GetRToken(AuthorizationFilterContext context,IConfiguration configuration)
         {
             try
             {
                 string code = context.HttpContext.Request.Query["code"];
+                Console.WriteLine(code);
                 var CLIEN_ID = configuration.GetSection("AUTH")["CLIEN_ID"];
                 var CLIENT_SECRET = configuration.GetSection("AUTH")["CLIENT_SECRET"];
 
                 var httpClient = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post,"https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
 
-                request.Headers.Add("content-type", "application/x-www-form-urlencoded");
+                // request.Headers.Add("content-type", "application/x-www-form-urlencoded");
 
                 // Add form data
                 var formData = new List<KeyValuePair<string, string>>
@@ -39,9 +34,9 @@ namespace MiddlewarePBox
                 var response = await httpClient.SendAsync(request);
 
                 response.EnsureSuccessStatusCode();
-
+                
                 RefreshTokenDTO refreshToken = await DeserializeRToken(response);
-
+                Console.WriteLine($"ANTES RT {refreshToken.RefreshToken}");
                 return refreshToken;
             }
             catch (System.Exception)
@@ -51,7 +46,7 @@ namespace MiddlewarePBox
             }
         }
 
-        private async Task<RefreshTokenDTO> DeserializeRToken(HttpResponseMessage dataResponse)
+        private static async Task<RefreshTokenDTO> DeserializeRToken(HttpResponseMessage dataResponse)
         {
             var responseContent = await dataResponse.Content.ReadAsStringAsync();
 
@@ -68,7 +63,7 @@ namespace MiddlewarePBox
             return RtokenResponse;
         }
         
-        public async Task<TokenDTO> GetTokenWRT(AuthorizationFilterContext context,string refreshToken)
+        public static async Task<TokenDTO> GetTokenWRT(IConfiguration configuration,string refreshToken)
         {
             try
             {
@@ -77,8 +72,6 @@ namespace MiddlewarePBox
 
                 var httpClient = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post,"https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
-
-                request.Headers.Add("content-type", "application/x-www-form-urlencoded");
 
                 // Add form data
                 var formData = new List<KeyValuePair<string, string>>
@@ -93,11 +86,11 @@ namespace MiddlewarePBox
                 request.Content = new FormUrlEncodedContent(formData);
 
                 var response = await httpClient.SendAsync(request);
-                
+                Console.WriteLine($"Refresh token : {refreshToken}");
                 response.EnsureSuccessStatusCode();
 
                 TokenDTO token = await DeserializeToken(response);
-
+                Console.WriteLine($"TOKEN DE RT {token.AccessToken}" );
                 return token;
 
             }

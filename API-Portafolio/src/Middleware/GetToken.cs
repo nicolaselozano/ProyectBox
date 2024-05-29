@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using Microsoft.AspNetCore.Mvc.Filters;
+using MiddlewarePBox;
 
 public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
 {
@@ -12,42 +13,29 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
     {
         try
         {
+            Console.WriteLine("empezando el getTOKEN");
             var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
             {
                 return;
             }
-            
-            string clientSecret = Environment.GetEnvironmentVariable("CLIENT_SECRET");
-            string clientId = Environment.GetEnvironmentVariable("CLIENT_ID");
-            string audience = Environment.GetEnvironmentVariable("AUDIENCE");
-            string code = context.HttpContext.Request.Query["code"];
 
-            var client = new RestClient("https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
-            var request = new RestRequest("", Method.Post);
-            request.AddHeader("content-type", "application/x-www-form-urlencoded");
-            request.AddParameter("grant_type", "authorization_code");
-            request.AddParameter("client_id", $"{clientId}");
-            request.AddParameter("client_secret", $"{clientSecret}");
-            request.AddParameter("code", $"{code}");
-            request.AddParameter("scope","read:patients");
-            request.AddParameter("redirect_uri", "http://localhost:3000/callback");
-            
-            var response = await client.ExecuteAsync(request);
+            var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
 
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            RefreshTokenDTO refreshToken = await TokenRefresh.GetRToken(context,configuration);
+
+            if (refreshToken != null)
             {
-                string jsonResponse = response.Content;
-                JObject responseObject = JObject.Parse(jsonResponse);
-                var accessToken = responseObject["access_token"];
-                if (accessToken != null)
-                {
-                    string token = accessToken.ToString();
-                    Console.WriteLine(token);
-                    context.HttpContext.Request.Headers.Add("Authorization", $"Bearer {token}");
-                    return; 
-                }
+                Console.WriteLine("sacando refresh");
+                TokenDTO tokenData = await TokenRefresh.GetTokenWRT(configuration,refreshToken.RefreshToken);
+                Console.WriteLine(refreshToken.AccessToken);
+                context.HttpContext.Items.Add("refreshTokenData",refreshToken);
+                context.HttpContext.Items.Add("tokenData",tokenData);
+                context.HttpContext.Request.Headers.Add("Refresh-Token",$"{refreshToken.RefreshToken}");
+                context.HttpContext.Request.Headers.Add("Authorization", $"Bearer {refreshToken.AccessToken}");
+                return; 
+                
             }
 
             context.Result = new UnauthorizedResult();
