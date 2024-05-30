@@ -70,10 +70,7 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 
             var validationParameters = new TokenValidationParameters
             {
-            
-                ValidateIssuer = false,
-                // ValidIssuer = $"https://{configuration.GetSection("AUTH")["DOMAIN"]}",
-                ValidateAudience = false,
+                ValidateAudience = true,
                 // ValidAudience = $"https://{configuration.GetSection("AUTH")["DOMAIN"]}",
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKeys = signingKeys,
