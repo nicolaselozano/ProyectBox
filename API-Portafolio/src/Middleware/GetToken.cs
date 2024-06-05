@@ -13,7 +13,6 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
     {
         try
         {
-            Console.WriteLine("empezando el getTOKEN");
             var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
 
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
@@ -27,7 +26,7 @@ public class GetTokenAttribute : Attribute, IAsyncAuthorizationFilter
 
             if (refreshToken != null)
             {
-                Console.WriteLine("sacando refresh");
+                Console.WriteLine("Creando refresh token");
                 TokenDTO tokenData = await TokenRefresh.GetTokenWRT(configuration,refreshToken.RefreshToken);
                 Console.WriteLine(refreshToken.AccessToken);
                 context.HttpContext.Items.Add("refreshTokenData",refreshToken);

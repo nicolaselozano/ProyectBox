@@ -67,14 +67,17 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 
             var discoveryDocument = await configurationManager.GetConfigurationAsync();
             var signingKeys = discoveryDocument.SigningKeys;
-
+            Console.WriteLine($"https://{configuration.GetSection("AUTH")["DOMAIN"]}/");
             var validationParameters = new TokenValidationParameters
             {
-                ValidateAudience = true,
+                ValidateIssuer = false,
+                ValidIssuer = $"{configuration.GetSection("AUTH")["DOMAIN"]}",
+                ValidateAudience = false,
+                ValidAudience = $"{configuration.GetSection("AUTH")["DOMAIN"]}",
                 // ValidAudience = $"https://{configuration.GetSection("AUTH")["DOMAIN"]}",
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKeys = signingKeys,
-                ValidateLifetime = true
+                ValidateLifetime = false
             };
 
             var handler = new JwtSecurityTokenHandler();

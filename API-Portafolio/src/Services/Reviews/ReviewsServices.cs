@@ -13,6 +13,7 @@ namespace Reviews.Services
     {
         Review AddReview(ReviewDTO review);
         bool GetReviewUser(Guid PId,string userEmail);
+        UserLikeProductsDTO GetAllReviewsUser(Guid userId,int page, int pageSize);
         Review UpdateReview(ReviewDTO review);
         int GetReviewCount(Guid PId);
         Review DeleteReview(Guid PId, Guid UId);
@@ -182,6 +183,45 @@ namespace Reviews.Services
             catch (System.Exception)
             {
                 
+                throw;
+            }
+        }
+        public UserLikeProductsDTO GetAllReviewsUser(Guid userId,int page, int pageSize)
+        {
+            try
+            {
+                int skip = (page - 1) * pageSize;
+                var response = _context.Review.Where(r => r.User.Id == userId && !r.isDeleted)
+                .Skip(skip)
+                .Take(pageSize)
+                .Include(r => r.Proyect)
+                .Select(r => new Proyect {
+                    Id = r.Proyect.Id,
+                    Image = r.Proyect.Image,
+                    Description = r.Proyect.Description,
+                    ImagesP = r.Proyect.ImagesP,
+                    isDeleted = r.Proyect.isDeleted,
+                    Name = r.Proyect.Name,
+                    Role = r.Proyect.Role,
+                    Url = r.Proyect.Url
+                })
+                .ToList();
+
+                if (response == null)
+                {
+                    throw new Exception("No se encontraron proyectos likeados por el Usuario");
+                }
+
+                UserLikeProductsDTO userLike = new UserLikeProductsDTO {
+                    Proyects = response,
+                    UserId = userId.ToString()
+                };
+
+                return userLike;
+            }
+            catch (System.Exception e)
+            {
+                Console.WriteLine("Obtencion de likes del usuario fallida : ",e);
                 throw;
             }
         }

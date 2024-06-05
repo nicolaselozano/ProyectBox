@@ -1,0 +1,13 @@
+.container__fieldset{
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+}
+
+.container__fieldset legend{
+    text-align: center;
+}
+
+.container__fieldset input{
+    color: black;
+}

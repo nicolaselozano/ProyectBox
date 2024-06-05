@@ -21,7 +21,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    // [CheckPermissionM("admin:user")]
+    [CheckPermissionM("admin:user",5)]
     public IActionResult GetUsers(int page = 1, int pageSize = 10)
     {
         try
@@ -95,7 +95,7 @@ public class UserController : ControllerBase
     [HttpGet("login")]
     [GetToken]
     [TokenValidationMiddleware]
-    // [CheckPermissionM("user:user",15)]
+    [CheckPermissionM("user:user",15)]
     public IActionResult GetUserLogin()
     {
         try
