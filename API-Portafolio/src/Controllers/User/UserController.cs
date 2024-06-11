@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
 using Users.Models;
@@ -91,6 +92,30 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPut]
+    [CheckPermissionM("admin:user",5)]
+    [TokenValidationMiddleware]
+    public IActionResult PutUser([FromBody] UserDTO newUser)
+    {
+        try
+        {
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwt = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+            
+            var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value;
+
+            UserDTO user = _userServices.UpdateUser(idAuth0,newUser);
+
+            return Ok(user);
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
+
     //Login
     [HttpGet("login")]
     [GetToken]
@@ -100,7 +125,6 @@ public class UserController : ControllerBase
     {
         try
         {
-            Console.WriteLine("ENTRO AL CONTROLADOR");
             var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
             var RToken = (RefreshTokenDTO)HttpContext.Items["refreshTokenData"];
 

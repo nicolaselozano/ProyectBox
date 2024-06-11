@@ -72,7 +72,7 @@ public class ReviewController:ControllerBase
 
     [HttpPost]
     [TokenValidationMiddleware]
-    [CheckPermissionM("user:user")]
+    [CheckPermissionM("user:use")]
     [RateLimitFilter(15)]
     public IActionResult AddReview([FromBody] ReviewDTO newReview)
     {

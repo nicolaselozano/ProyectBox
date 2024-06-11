@@ -16,7 +16,7 @@ namespace Users.Models
         public string Rol {get; set;}
         public bool isDeleted { get; set; } = false;
         [JsonIgnore]
-        public List<UserProyect> UserProyects {get;} = new List<UserProyect>();
+        public List<UserProyect> UserProyects {get; } = new List<UserProyect>();
         [JsonIgnore]
         public ICollection<Review> Reviews { get; set; }
 

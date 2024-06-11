@@ -54,8 +54,8 @@ const CDetail = ({id}:IId) => {
     useEffect(() => {
         setActualR(reviews);
         console.log(error);
-        if(error.status == 429) alert("Se hicieron muchas request");
-    },[dispatch,error.status])
+        if(error?.status == 429) alert("Se hicieron muchas request");
+    },[dispatch,error?.status])
 
     useEffect(() => {
         if(actualR == null) setActualR(reviews);
