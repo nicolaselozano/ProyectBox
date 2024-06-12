@@ -203,7 +203,7 @@ namespace Reviews.Services
                     isDeleted = r.Proyect.isDeleted,
                     Name = r.Proyect.Name,
                     Role = r.Proyect.Role,
-                    Url = r.Proyect.Url
+                    Url = r.Proyect.Url,
                 })
                 .ToList();
 

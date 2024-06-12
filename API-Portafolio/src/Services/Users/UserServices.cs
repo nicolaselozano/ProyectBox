@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Web;
 using ApplicationDb.Models;
 using Proyects.Models;
 using UserProyects.Models;
@@ -12,7 +13,7 @@ namespace Users.Services
         User GetUser(string email);
         User DeleteUser(Guid id);
         User ActiveUser(Guid id);
-        UserDTO UpdateUser(string AuthId,UserDTO user);
+        UpdateUserDTO UpdateUser(string AuthId,UpdateUserDTO user);
     }
 
     public class UserService(ApplicationDbContext _context,IConfiguration configuration):IUserServices
@@ -118,25 +119,21 @@ namespace Users.Services
 
 
         }
-        public UserDTO UpdateUser(string AuthId,UserDTO user)
+        public UpdateUserDTO UpdateUser(string AuthId,UpdateUserDTO user)
         {
             try
             {
-                
                 User userExist = _context.Users.FirstOrDefault(u => u.AuthId == AuthId);
-
                 if(userExist == null)
                 {
                     throw new Exception("El usuario ingresado no existe en la base de datos");
                 }
 
-                userExist.Name = user.Name ?? userExist.Name;
-
-               
+                userExist.Name = user.Name ?? userExist.Name;               
 
                 if(user.UserProyects.Count() != 0)
                 {
-                    List<UserProyect> allUserProyects = _context.UserProyects.Where( up => up.UserId == user.Id).ToList();
+                    List<UserProyect> allUserProyects = _context.UserProyects.Where( up => up.UserId.ToString() == user.Id).ToList();
 
                     foreach (var userProyect in allUserProyects)
                     {
@@ -155,6 +152,7 @@ namespace Users.Services
                             user.UserProyects.Add(newUP);
                         }
                     }
+                    _context.SaveChanges();
                 }
 
                 _context.SaveChanges();

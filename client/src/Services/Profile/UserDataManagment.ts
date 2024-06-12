@@ -1,14 +1,18 @@
 import axios, { AxiosResponse } from "axios"
-import { Console } from "console"
 import Error from "next/error"
 import { API_ENDPOINT } from "../../../vars"
+import { UUID } from "crypto"
 
+interface UserProyect{
+    proyectsId?:string
+    userId?: UUID
+    user?:any
+}
 export interface IUData{
-    authId:string
     email:string
-    id:string
+    id:UUID
     name:string
-    rol:string
+    userProyects?: UserProyect[];
 }
 
 export interface IUserLikes{
@@ -20,6 +24,8 @@ export const getUserData = () => {
     const data = localStorage.getItem("user");
     if(data)return JSON.parse(data) as IUData; 
 }
+
+
 
 export const getUserFavs = async () => {
     try {
@@ -44,6 +50,30 @@ export const getUserFavs = async () => {
     }
 }
 
+export const editUser = async (data:IUData) => {
+
+    try {
+        console.log(data);
+        
+        const token = localStorage.getItem("token");
+        const rToken= localStorage.getItem("rtoken");
+
+        const response = await axios.put(`${API_ENDPOINT}/User`, data, {
+            headers: {
+              "Refresh-Token": `${rToken}`,
+              "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        console.log(response.data);
+        return data;
+
+    } catch (error) {
+        console.error('Bad request: ' + error.response.data);
+    }
+
+}
+
 export const manageError = (error:Error) => {
-    alert(`Hubo un error ${error.state} : ${error.context}`)
+    console.error(`Hubo un error ${error.state} : ${error.context}`)
 }

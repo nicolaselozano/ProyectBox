@@ -7,6 +7,7 @@ using ApplicationDb.Models;
 using Users.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Web;
 
 //lA PERMISSION ES CHEQUEADA POR API SEGUN EL tokenTimeCheck ESPECIFICADO
 public class CheckPermissionM(string customPermission = null,int tokenTimeCheck = 10):Attribute,IAsyncAuthorizationFilter
@@ -19,7 +20,6 @@ public class CheckPermissionM(string customPermission = null,int tokenTimeCheck 
         try
         {   
             var auth = configuration.GetSection("AUTH");
-            Console.WriteLine("el TOOOOOOOOKENBSSS ");
             var authorizationHeader = context.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
             {
@@ -33,7 +33,7 @@ public class CheckPermissionM(string customPermission = null,int tokenTimeCheck 
                     Console.WriteLine($"{claim.Type}: {claim.Value}");
                 }   
                 
-                var idAuth0 = Uri.EscapeDataString(jwtToken.Claims.FirstOrDefault(r => r.Type == "sub").Value);
+                var idAuth0 = HttpUtility.UrlEncode(jwtToken.Claims.FirstOrDefault(r => r.Type == "sub").Value);
                 
                 Console.WriteLine($"USER ID {idAuth0}");
 

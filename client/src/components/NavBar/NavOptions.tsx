@@ -15,6 +15,9 @@ const NavOptions = () => {
         <li>
           <LoginButton/>
         </li>
+        <li>
+          
+        </li>
       </ul>
     </div>
   );

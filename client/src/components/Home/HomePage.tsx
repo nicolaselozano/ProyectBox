@@ -51,7 +51,11 @@ const HomePage = () => {
             <h1 className="m-5 font-semibold text-violet-400">Proyecto destacado</h1>
             <div className="border border-violet-400 rounded">
                 
-                <h2>{mostVP?.proyect ? <Item proyect={mostVP.proyect}/> :null}</h2>                
+                <h2>{mostVP?.proyect ? <Item proyect={mostVP.proyect}/> :
+                <div>
+                    <div className={`${style.container__loader} bg-general_bg`}></div>
+                </div>
+                }</h2>                
             </div>
 
             <Carrusel/>

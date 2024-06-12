@@ -14,10 +14,8 @@ const CatchRedirect = (props) => {
                 console.log(props.code);
 
                 bandera = false;
-                const refreshToken = localStorage.getItem("rtoken");
               const response = await fetch(`http://localhost:5019/api/user/login?code=${props.code}`,{
-                method:"GET",
-                headers:refreshToken ? {"Refresh-Token":`${refreshToken}`} : {}
+                method:"GET"
               });
       
               if (!response.ok) {

@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
+using System.Web;
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -22,7 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    [CheckPermissionM("admin:user",5)]
+    // [CheckPermissionM("admin:user",5)]
     public IActionResult GetUsers(int page = 1, int pageSize = 10)
     {
         try
@@ -39,6 +40,7 @@ public class UserController : ControllerBase
                 user.Password,
                 user.Rol,
                 user.isDeleted,
+                user.AuthId,
                 
                 ProductID = user.UserProyects.Select(up => up.ProyectsId).ToList()
             }
@@ -93,19 +95,19 @@ public class UserController : ControllerBase
     }
 
     [HttpPut]
-    [CheckPermissionM("admin:user",5)]
     [TokenValidationMiddleware]
-    public IActionResult PutUser([FromBody] UserDTO newUser)
+    // [CheckPermissionM("user:user",5)]
+    public IActionResult PutUser([FromBody] UpdateUserDTO newUser)
     {
         try
-        {
+        {Console.WriteLine($"inicio {newUser.Email}");
             var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
             var tokenHandler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwt = tokenHandler.ReadJwtToken(tokenData.AccessToken);
             
             var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value;
 
-            UserDTO user = _userServices.UpdateUser(idAuth0,newUser);
+            UpdateUserDTO user = _userServices.UpdateUser(HttpUtility.UrlEncode(idAuth0),newUser);
 
             return Ok(user);
         }

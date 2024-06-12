@@ -17,9 +17,9 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
             if (authorizationHeader != null && authorizationHeader.StartsWith("Bearer "))
             {
                 string token = authorizationHeader.Substring("Bearer ".Length).Trim();
-                bool validate = await ValidateTokenAsync(token,context);
+                JwtSecurityToken validate = await ValidateTokenAsync(token,context);
 
-                if (validate != true)
+                if (validate == null)
                 {
                     Console.WriteLine("GENERANDO UN NUEVO TOKEN CON EL REFRESHTOKEN");
 
@@ -31,16 +31,23 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 
                     if (newToken != null)
                     {
-                        Console.WriteLine($"Token {newToken.AccessToken}");
+                        Console.WriteLine($"Token TOKKKKKKKKKEEEEEEEEN DATAAAAAAAAAAAAAAA {newToken.AccessToken}");
+                        context.HttpContext.Items.Remove("tokenData");
                         context.HttpContext.Items.Add("tokenData",newToken);
                         context.HttpContext.Request.Headers.Add("Authorization", $"Bearer {newToken.AccessToken}");
                         return;
                     }
 
                     context.Result = new UnauthorizedResult();
+
+
                     return;
                 }
-
+                context.HttpContext.Items.Remove("tokenData");
+                context.HttpContext.Items.Add("tokenData",new TokenDTO{
+                    AccessToken=$"{token}"
+                });
+                
                 return;
             }
         }
@@ -53,12 +60,12 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
     }
 
 
-    private async Task<bool> ValidateTokenAsync(string token,AuthorizationFilterContext context)
+    private async Task<JwtSecurityToken> ValidateTokenAsync(string token,AuthorizationFilterContext context)
     {
         try
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            Console.WriteLine($"SOY EL TOKEN {token}");
+            Console.WriteLine($"SOY EL TOKEN VALIDATETOKENASYNC {token}");
             var configuration = context.HttpContext.RequestServices.GetService<IConfiguration>();
             var configurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
             $"https://{configuration.GetSection("AUTH")["DOMAIN"]}/.well-known/openid-configuration",
@@ -85,12 +92,12 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
             
             var claimsPrincipal = tokenHandler.ValidateToken(token, validationParameters, out SecurityToken validatedToken);
             jwtToken = (JwtSecurityToken)validatedToken;
-            return true;
+            return jwtToken;
 
         }
         catch (Exception ex)
         {
-            throw new Exception("error al comprobar el token", ex);
+            return null;
         }
     }
 }

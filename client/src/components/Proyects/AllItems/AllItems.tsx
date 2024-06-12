@@ -44,7 +44,18 @@ const AllItems = () => {
                             <Item proyect={proyect} />
                         </div>
                     </Link>
-                    ): <h1>Loading...</h1>
+                    ): 
+                    <div className="text-center">
+                        <h1>Loading...</h1>
+                        <div className="flex flex-wrap justify-center">
+                            <div className={`${style.container__loader} bg-general_bg`}></div>
+                            <div className={`${style.container__loader} bg-general_bg`}></div>
+                            <div className={`${style.container__loader} bg-general_bg`}></div>
+                            <div className={`${style.container__loader} bg-general_bg`}></div>
+                            <div className={`${style.container__loader} bg-general_bg`}></div>
+                        </div>
+                    </div>
+
                 }
             </div>
         </div>
