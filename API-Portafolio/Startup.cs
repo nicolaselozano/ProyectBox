@@ -28,7 +28,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        
+
         services.AddRateLimiter(options =>
         {
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
@@ -100,23 +100,6 @@ public class Startup
                         .AllowAnyMethod();
                 }); 
         });
-        
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(options =>
-            {
-                options.Authority = "https://dev-v2roygalmy6qyix2.us.auth0.com/";
-                options.Audience = "https://PORTAFOLIO_API.com";
-                options.RequireHttpsMetadata = false; 
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    ValidateIssuer = true,
-                    ValidIssuer = "https://dev-v2roygalmy6qyix2.us.auth0.com/", 
-                    ValidateAudience = true,
-                    ValidAudience = "https://PORTAFOLIO_API.com",
-                    ValidateLifetime = true
-                };
-            });
         
 
         services.AddHttpContextAccessor();

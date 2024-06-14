@@ -43,7 +43,6 @@ const CDetail = ({id}:IId) => {
         }
         
         getLikeCountUser();
-        setActualR(reviews);
 
         return () => {
             dispatch(resetDetail);
@@ -54,11 +53,17 @@ const CDetail = ({id}:IId) => {
     useEffect(() => {
         setActualR(reviews);
         console.log(error);
-        if(error.status == 429) alert("Se hicieron muchas request");
-    },[dispatch,error.status])
+        if(error?.status == 429) alert("Se hicieron muchas request");
+    },[dispatch,error?.status])
 
     useEffect(() => {
-        if(actualR == null) setActualR(reviews);
+        
+        const getLikeCountUser = async () => {
+            if(actualR == null) setActualR(reviews);
+        }
+
+        getLikeCountUser();
+
     },[reviews,loading,dispatch])
 
     const handleLikeButton = () => {
@@ -99,7 +104,7 @@ const CDetail = ({id}:IId) => {
                         <span className="sr-only">Icon description</span>
                     </button>
 
-                    <span className="ml-5">{actualR}</span>
+                    <span className="ml-5">{actualR ? actualR : 0}</span>
 
                 </div>
                 <Item proyect={product as Product} />

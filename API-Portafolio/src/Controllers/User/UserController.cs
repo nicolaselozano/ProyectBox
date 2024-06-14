@@ -1,8 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Text.Json;
+using System.Web;
 using ApplicationDb.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using NuGet.Common;
 using Users.Models;
 using Users.Services;
 
@@ -20,7 +23,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    // [CheckPermissionM("admin:user")]
+    // [CheckPermissionM("admin:user",5)]
     public IActionResult GetUsers(int page = 1, int pageSize = 10)
     {
         try
@@ -37,6 +40,7 @@ public class UserController : ControllerBase
                 user.Password,
                 user.Rol,
                 user.isDeleted,
+                user.AuthId,
                 
                 ProductID = user.UserProyects.Select(up => up.ProyectsId).ToList()
             }
@@ -60,13 +64,21 @@ public class UserController : ControllerBase
     {
         try
         {
-            Console.WriteLine("Hola");
-            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var RToken = (RefreshTokenDTO)HttpContext.Items["refreshTokenData"];
 
             if (tokenData != null)
             {
-
-                var response = _userServices.AddUser(tokenData);
+                var tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+                User user = _userServices.AddUser(token);
+                ResponseUserDTO response = new ResponseUserDTO 
+                {
+                    token = tokenData.AccessToken,
+                    user = user,
+                    refreshToken = RToken.RefreshToken
+                };              
 
                 return Ok(response);
             }
@@ -82,22 +94,49 @@ public class UserController : ControllerBase
         }
     }
 
+    [HttpPut]
+    [TokenValidationMiddleware]
+    // [CheckPermissionM("user:user",5)]
+    public IActionResult PutUser([FromBody] UpdateUserDTO newUser)
+    {
+        try
+        {Console.WriteLine($"inicio {newUser.Email}");
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var tokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityToken jwt = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+            
+            var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value.Replace("|","%7C");
+
+            UpdateUserDTO user = _userServices.UpdateUser(idAuth0,newUser);
+
+            return Ok(user);
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
+        }
+    }
+
     //Login
     [HttpGet("login")]
     [GetToken]
-    [CheckPermissionM("user:user",15)]
     [TokenValidationMiddleware]
+    [CheckPermissionM("user:user",15)]
     public IActionResult GetUserLogin()
     {
         try
         {
-
-            var tokenData = (JwtSecurityToken)HttpContext.Items["tokendata"];
+            var tokenData = (TokenDTO)HttpContext.Items["tokenData"];
+            var RToken = (RefreshTokenDTO)HttpContext.Items["refreshTokenData"];
 
             if (tokenData != null)
             {   
-                string email = tokenData.Claims.First(c => c.Type == "custom_email_claim").Value;
-            
+                var tokenHandler = new JwtSecurityTokenHandler();
+                JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
+                Console.WriteLine("emaillllllsssssssssssssssss", tokenData.AccessToken);
+                string email = token.Claims.First(c => c.Type == "custom_email_claim").Value;
+                
                 User userResponse = _userServices.GetUser(email);
 
                 var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();
@@ -106,7 +145,8 @@ public class UserController : ControllerBase
                 ResponseUserDTO response = new ResponseUserDTO 
                 {
                     token = tokenResponse,
-                    user = userResponse
+                    user = userResponse,
+                    refreshToken= RToken.RefreshToken
                 };              
 
                 return Ok(response);

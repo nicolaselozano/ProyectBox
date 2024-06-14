@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 
 internal class Auth0Utilities
@@ -41,8 +42,9 @@ internal class Auth0Utilities
         {
             try
             {
-                string clientSecret = configuration.GetSection("AUTH")["CLIENT_SECRET"];
-
+                string clientSecret = configuration.GetSection("AUTH")["AUTH_CLIENT_SECRET"];
+                string clientId = configuration.GetSection("AUTH")["CLIEN_ID"];
+                
                 if(clientSecret == null)
                 {
                     throw new Exception("No se aporto el client_secret");
@@ -51,27 +53,26 @@ internal class Auth0Utilities
                 var httpClient = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post, "https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
 
-                // Add form data
-                var formData = new List<KeyValuePair<string, string>>
+                var jsonPayload = new
                 {
-                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                    new KeyValuePair<string, string>("client_id", "2qH0pL2qNs9XRGJokqg9XnypmZDeEh42"),
-                    new KeyValuePair<string, string>("client_secret", $"{clientSecret}"),
-                    new KeyValuePair<string, string>("audience", "https://dev-v2roygalmy6qyix2.us.auth0.com/api/v2/")
+                    client_id = $"{clientId}",
+                    client_secret = $"{clientSecret}",
+                    audience = "https://dev-v2roygalmy6qyix2.us.auth0.com/api/v2/",
+                    grant_type = "client_credentials"
                 };
 
-                request.Content = new FormUrlEncodedContent(formData);
+                var json = Newtonsoft.Json.JsonConvert.SerializeObject(jsonPayload);
+                request.Content = new StringContent(json, Encoding.UTF8, "application/json");
 
                 var response = await httpClient.SendAsync(request);
 
                 response.EnsureSuccessStatusCode();
-
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 var tokenResponse = System.Text.Json.JsonSerializer.Deserialize<TokenDTO>(responseContent);
 
                 string accessToken = tokenResponse.AccessToken;
-
+                
                 return accessToken;
 
             }

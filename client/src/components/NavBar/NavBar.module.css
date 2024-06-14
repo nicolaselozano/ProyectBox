@@ -16,7 +16,9 @@
 
 .container__dropMenu {
   position: absolute;
-  margin : 0 0 0 43%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
   .hide_mobile {
     display: block;
@@ -25,7 +27,10 @@
   @media (max-width: 767px) {
     .container__dropMenu {
       position: relative;
+      display: block;
+      width: 0%;
       margin: 0;
+      
     }
     .hide_mobile {
       margin: 0.5rem;

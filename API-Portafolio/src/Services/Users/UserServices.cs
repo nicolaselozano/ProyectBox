@@ -1,5 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Web;
 using ApplicationDb.Models;
+using Proyects.Models;
+using UserProyects.Models;
 using Users.Models;
 
 namespace Users.Services
@@ -10,6 +13,7 @@ namespace Users.Services
         User GetUser(string email);
         User DeleteUser(Guid id);
         User ActiveUser(Guid id);
+        UpdateUserDTO UpdateUser(string AuthId,UpdateUserDTO user);
     }
 
     public class UserService(ApplicationDbContext _context,IConfiguration configuration):IUserServices
@@ -98,7 +102,8 @@ namespace Users.Services
                 User user = new User
                 {
                     Email = newUser.Email,
-                    Name = newUser.Name
+                    Name = newUser.Name,
+                    AuthId = newUser.AuthId.Replace("|","%7C")
                 };
 
                 _context.Users.Add(user);
@@ -114,6 +119,53 @@ namespace Users.Services
             }
 
 
+        }
+        public UpdateUserDTO UpdateUser(string AuthId,UpdateUserDTO user)
+        {
+            try
+            {
+                User userExist = _context.Users.FirstOrDefault(u => u.AuthId == AuthId);
+                if(userExist == null)
+                {
+                    throw new Exception("El usuario ingresado no existe en la base de datos");
+                }
+
+                userExist.Name = user.Name ?? userExist.Name;               
+
+                if(user.UserProyects.Count() != 0)
+                {
+                    List<UserProyect> allUserProyects = _context.UserProyects.Where( up => up.UserId.ToString() == user.Id).ToList();
+
+                    foreach (var userProyect in allUserProyects)
+                    {
+                        if(!user.UserProyects.Contains(userProyect))
+                        {
+                            _context.UserProyects.Remove(userProyect);
+                            user.UserProyects.Remove(userProyect);
+                        }
+                    }
+
+                    foreach (var newUP in user.UserProyects)
+                    {
+                        if(!allUserProyects.Contains(newUP))
+                        {
+                            _context.UserProyects.Add(newUP);
+                            user.UserProyects.Add(newUP);
+                        }
+                    }
+                    _context.SaveChanges();
+                }
+
+                _context.SaveChanges();
+                
+                return user;
+
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
         }
     }
 

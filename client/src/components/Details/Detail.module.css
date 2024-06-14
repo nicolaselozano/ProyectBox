@@ -1,7 +1,19 @@
 .container__like {
 
     position: absolute;
+    width: 100%;
+    margin: 6vh 0 0 -30vh;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 
-    margin: 24vh 0 0 40vh;
+}
 
+@media screen and (max-width: 768px) {
+
+    .container__like {
+        margin: 6vh 0 0 20vh;
+        width: 100%;
+    }
 }

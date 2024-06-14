@@ -15,14 +15,29 @@ public class ReviewController:ControllerBase
         _reviewService = reviewService;
         _utilsService = utilsService;
     }
+    [HttpGet("userLikes")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("user:user")]
+    public IActionResult GetAllReviewsUser([FromQuery] Guid userId,[FromQuery]int page = 1,[FromQuery] int pageSize= 10)
+    {
+        try
+        {
+            UserLikeProductsDTO likedProducts = _reviewService.GetAllReviewsUser(userId,page,pageSize);
 
+            return Ok(likedProducts);
+        }
+        catch (System.Exception ex)
+        {
+            Console.Error.WriteLine($"error al obtener todas la reviews del usuario : {ex.Message}");
+            throw;
+        }
+    }
     [HttpGet]
     public IActionResult GetReview([FromQuery] Guid PId, [FromQuery] string userEmail)
     {
         try
         {
 
-            
             bool review = _reviewService.GetReviewUser(PId, userEmail);
 
             return Ok(review);

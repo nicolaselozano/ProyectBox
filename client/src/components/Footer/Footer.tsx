@@ -1,6 +1,9 @@
+"use client"
 import Link from "next/link";
 import imgLogo from "../../../asset/OIG4.webp";
 import style from "./Footer.module.css";
+import { useEffect, useState } from "react";
+import Button_Nav from "../Button/Button_Nav";
 
 const Footer = () =>{
 

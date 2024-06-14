@@ -1,0 +1,13 @@
+.container__loader {
+    width: 20rem;
+    height: 3rem;
+    border-radius: 2rem;
+    margin: 1rem;
+    animation: fade 2s ease-in-out infinite alternate;
+}
+  
+@keyframes fade {
+    0% { opacity: 1; } /* Fully opaque */
+    50% { opacity: 0.5; } /* Half transparent */
+    100% { opacity: 1; } /* Fully opaque again */
+}

@@ -1,5 +1,6 @@
 import Button_Nav from "../Button/Button_Nav";
 import LoginButton from "../Login/LoginButton";
+import RegisterButton from "../Login/Register/RegisterButton";
 import style from "./NavOptions.module.css";
 
 const NavOptions = () => {
@@ -14,6 +15,9 @@ const NavOptions = () => {
         </li>
         <li>
           <LoginButton/>
+        </li>
+        <li>
+          <RegisterButton/>
         </li>
       </ul>
     </div>

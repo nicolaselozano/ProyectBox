@@ -2,6 +2,7 @@
 import { UUID } from "crypto";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import Button_Nav from "../Button/Button_Nav";
 
 export interface User {
     email:string
@@ -27,7 +28,13 @@ const ProfileNav = () => {
 
     return (
         <div>
-            {user ? <h1>Bienvenido {user?.name}</h1> : null}
+            {user ? 
+                <div className="flex-col items-center justify-center ml-5">
+                    <h1>Bienvenido {user?.name}</h1> 
+                    <div className="ml-3 -mt-3">
+                        <Button_Nav to="/pages/Profile">Perfil</Button_Nav>
+                    </div>
+                </div>: null}
         </div>
     )
 

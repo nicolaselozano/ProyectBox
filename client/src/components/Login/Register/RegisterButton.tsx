@@ -7,13 +7,15 @@ import {
     CLIENT_ID,
     RESPONSE_TYPE,
     REDIRECT_URI,
-  } from "../../../vars";
+  } from "../../../../vars";
 
-const LoginButton = () => {
+const RegisterButton = () => {
 
     
     const handleClick = async () =>{
+
         localStorage.clear();
+
         const webAuth = new auth0.WebAuth({
             domain:`${DOMAIN}`,
             clientID:`${CLIENT_ID}`
@@ -22,7 +24,7 @@ const LoginButton = () => {
         let url = webAuth.client.buildAuthorizeUrl({
             clientID: `${CLIENT_ID}`,
             responseType: `${RESPONSE_TYPE}`,
-            redirectUri: `${REDIRECT_URI}/pages/redirect`,
+            redirectUri: `${REDIRECT_URI}/pages/redirect?signin=true`,
             scope: `${SCOPE}`,
             audience: `${AUDIENCE}`,
           });
@@ -34,9 +36,9 @@ const LoginButton = () => {
     return (
         <button className="bg- hover:bg-general_bg active:bg-general_bg text-white font-bold py-2 px-4 rounded mt-2"
         onClick={handleClick}
-        >Login</button>
+        >Register</button>
     )
 
 }
 
-export default LoginButton;
+export default RegisterButton;
