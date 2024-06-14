@@ -65,7 +65,7 @@
 .container__welcoming_pet {
     position: absolute;
     width: 10vh;
-    margin: 27vh 0 0 155vh;
+    margin: 27vh 0 0 163vh;
     overflow: hidden;
     animation: levitante 2s ease-in-out infinite;
 }
@@ -85,3 +85,16 @@
         transform: translateY(-10px);
     }
 }
+
+@media (max-width: 767px) {
+    .container__welcoming_pet {
+        margin: 27vh 0 0 50vh;
+    }
+    .container__welcoming_name {
+        font-size: 6vh;
+    }
+    .container__welcoming_txt{
+        font-size:5vh;
+    }
+}
+

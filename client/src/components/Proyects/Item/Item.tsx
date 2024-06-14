@@ -1,19 +1,22 @@
 import { Url } from "next/dist/shared/lib/router/router"
 import style from "./Item.module.css"
 import Image from "next/image"
+import { UUID } from "crypto"
 
 interface Item{
     proyect:{
+        id:UUID
         image:string
         name:string
         url:string
         role:string
+        description:string
     }
 }
 
-const Item = (props:Item) => {
+const Item = ({proyect}:Item) => {
     
-    const {image,name,url,role} = props.proyect;
+    const {image,name,url,role} = proyect;
 
     return(
 

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API_Portafolio.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class m1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,7 +49,6 @@ namespace API_Portafolio.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ProyectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProyectId1 = table.Column<Guid>(type: "uuid", nullable: false),
                     Url = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
@@ -61,10 +60,30 @@ namespace API_Portafolio.Migrations
                         principalTable: "Proyects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Review",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Like = table.Column<bool>(type: "boolean", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Review", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProyectImages_Proyects_ProyectId1",
-                        column: x => x.ProyectId1,
+                        name: "FK_Review_Proyects_PId",
+                        column: x => x.PId,
                         principalTable: "Proyects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Review_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -99,9 +118,14 @@ namespace API_Portafolio.Migrations
                 column: "ProyectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProyectImages_ProyectId1",
-                table: "ProyectImages",
-                column: "ProyectId1");
+                name: "IX_Review_PId",
+                table: "Review",
+                column: "PId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Review_UserId",
+                table: "Review",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserProyects_UserId",
@@ -114,6 +138,9 @@ namespace API_Portafolio.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ProyectImages");
+
+            migrationBuilder.DropTable(
+                name: "Review");
 
             migrationBuilder.DropTable(
                 name: "UserProyects");

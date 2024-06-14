@@ -21,8 +21,6 @@ public class ProyectController : ControllerBase
     {
         try
         {
-            Console.WriteLine("GET");
-
             int skip = (page - 1) * pageSize;
 
             var proyects = _proyectService.GetProyects(page,pageSize);
@@ -96,7 +94,6 @@ public class ProyectController : ControllerBase
         try
         {
 
-
             var entity = _proyectService.AddProyect(request);
 
             return Ok(entity);
@@ -105,6 +102,22 @@ public class ProyectController : ControllerBase
         {
             Console.WriteLine($"Error al crear proyectos: {ex.Message}");
             return StatusCode(500, ex.Message);
+        }
+    }
+
+    [HttpPost("many")]
+    public IActionResult AddManyProyects([FromBody] NProyectsDTO request)
+    {
+        try
+        {
+            string response = _proyectService.AddManyProyects(request);
+
+            return Ok(response);
+        }
+        catch (System.Exception)
+        {
+            
+            throw;
         }
     }
 

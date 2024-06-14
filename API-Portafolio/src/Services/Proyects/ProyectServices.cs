@@ -14,13 +14,14 @@ namespace Proyects.Services
         List<ProyectDto> GetProyects(int page, int pageSize);
         ProyectDto AddProyect(AddProyectRequest request);
         ProyectDto GetProyect(Guid id);
+        string AddManyProyects(NProyectsDTO exampleProyects);
         string AddImage(Guid id,ImagesRequest request);
         string UpdateProyect(Guid id,Proyect update);
         string DeleteProyect(Guid id);
         string ActiveProyect(Guid id);
     }
 
-        public class ProyectService : IProyectService
+    public class ProyectService : IProyectService
     {
         private readonly ApplicationDbContext _context;
 
@@ -28,7 +29,63 @@ namespace Proyects.Services
         {
             _context = context;
         }
+        public string AddManyProyects(NProyectsDTO exampleProyects)
+        {
+            try
+            {
+                foreach (var Proyect in exampleProyects.ProyectList)
+                {
+                    var pExist = _context.Proyects.FirstOrDefault(p => p.Name == Proyect.Name);
 
+                    if (pExist != null)
+                    {
+                        throw new Exception("El proyecto ya existe");
+                    }
+
+                    var p = new Proyect
+                    {
+                        Name = Proyect.Name,
+                        Url = Proyect.Url,
+                        Image = Proyect.Image,
+                        Role = Proyect.Role,
+                        Description = Proyect.Description,
+                        isDeleted = false,
+                    };
+
+                    _context.Proyects.Add(p);
+
+                    foreach (var userId in exampleProyects.UserProyects)
+                    {
+                        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+
+                        if (user == null)
+                        {
+                            throw new Exception($"El usuario con ID {userId} no existe");
+                        }
+
+                        var userProyect = new UserProyect
+                        {
+                            User = user,  
+                            Proyects = p
+                        };
+
+                        _context.UserProyects.Add(userProyect);
+                        user.UserProyects.Add(userProyect);
+                        
+                    }
+                }
+
+                _context.SaveChanges();
+
+                return "Se subieron correctamente todos los proyectos";
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+
+        }
         public List<ProyectDto> GetProyects(int page, int pageSize)
         {
             int skip = (page - 1) * pageSize;
@@ -162,7 +219,6 @@ namespace Proyects.Services
                         var entityImage = _context.ProyectImages.Add(
                             new ProyectImage
                             {
-                                ProyectId = id,
                                 Url = img
                             });
 

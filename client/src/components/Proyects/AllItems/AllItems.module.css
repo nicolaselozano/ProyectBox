@@ -15,4 +15,19 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
+/* loading */
+.container__loader {
+  width: 30rem;
+  height: 20rem;
+  border-radius: 2rem;
+  margin: 1rem;
+  animation: fade 2s ease-in-out infinite alternate;
+}
+
+@keyframes fade {
+  0% { opacity: 1; } /* Fully opaque */
+  50% { opacity: 0.5; } /* Half transparent */
+  100% { opacity: 1; } /* Fully opaque again */
+}
+
 

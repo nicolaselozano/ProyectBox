@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using ProyectImages.Models;
 using Proyects.Models;
+using Reviews.Model;
 using UserProyects.Models;
 using Users.Models;
 
@@ -13,6 +14,7 @@ namespace ApplicationDb.Models
         public DbSet<UserProyect> UserProyects { get; set; }
 
         public DbSet<ProyectImage> ProyectImages { get; set;}
+        public DbSet<Review> Review { get; set;}
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -21,22 +23,6 @@ namespace ApplicationDb.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Name)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Url)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Image)
-                .HasColumnType("varchar");
-
-            modelBuilder.Entity<Proyect>()
-                .Property(p => p.Role)
-                .HasColumnType("varchar");
-
             modelBuilder.Entity<UserProyect>()
                 .HasKey(up => new { up.ProyectsId, up.UserId });
 
@@ -51,9 +37,15 @@ namespace ApplicationDb.Models
                 .HasForeignKey(up => up.ProyectsId);
                 
             modelBuilder.Entity<ProyectImage>()
-            .HasOne<Proyect>()
-            .WithMany()
-            .HasForeignKey(pi => pi.ProyectId);
+                .HasOne(p => p.Proyect);
+                
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Proyect) 
+                .WithMany()
+                .HasForeignKey(r => r.PId);
+
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.User);
         }
     }
 }

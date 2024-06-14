@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace API_Portafolio.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240301043639_Initial")]
-    partial class Initial
+    [Migration("20240519215610_m5")]
+    partial class m5
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,9 +34,6 @@ namespace API_Portafolio.Migrations
                     b.Property<Guid>("ProyectId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("ProyectId1")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Url")
                         .IsRequired()
                         .HasColumnType("text");
@@ -44,8 +41,6 @@ namespace API_Portafolio.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProyectId");
-
-                    b.HasIndex("ProyectId1");
 
                     b.ToTable("ProyectImages");
                 });
@@ -60,16 +55,16 @@ namespace API_Portafolio.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Image")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<string>("Role")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<string>("Url")
-                        .HasColumnType("varchar");
+                        .HasColumnType("text");
 
                     b.Property<bool>("isDeleted")
                         .HasColumnType("boolean");
@@ -77,6 +72,33 @@ namespace API_Portafolio.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Proyects");
+                });
+
+            modelBuilder.Entity("Reviews.Model.Review", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("Like")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("PId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("isDeleted")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("UserProyects.Models.UserProyect", b =>
@@ -102,6 +124,10 @@ namespace API_Portafolio.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("AuthId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
@@ -111,6 +137,10 @@ namespace API_Portafolio.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Rol")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -124,19 +154,32 @@ namespace API_Portafolio.Migrations
 
             modelBuilder.Entity("ProyectImages.Models.ProyectImage", b =>
                 {
-                    b.HasOne("Proyects.Models.Proyect", null)
-                        .WithMany()
+                    b.HasOne("Proyects.Models.Proyect", "Proyect")
+                        .WithMany("ImagesP")
                         .HasForeignKey("ProyectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("Proyect");
+                });
+
+            modelBuilder.Entity("Reviews.Model.Review", b =>
+                {
                     b.HasOne("Proyects.Models.Proyect", "Proyect")
-                        .WithMany("ImagesP")
-                        .HasForeignKey("ProyectId1")
+                        .WithMany()
+                        .HasForeignKey("PId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Users.Models.User", "User")
+                        .WithMany("Reviews")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Proyect");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UserProyects.Models.UserProyect", b =>
@@ -167,6 +210,8 @@ namespace API_Portafolio.Migrations
 
             modelBuilder.Entity("Users.Models.User", b =>
                 {
+                    b.Navigation("Reviews");
+
                     b.Navigation("UserProyects");
                 });
 #pragma warning restore 612, 618
