@@ -105,9 +105,9 @@ public class UserController : ControllerBase
             var tokenHandler = new JwtSecurityTokenHandler();
             JwtSecurityToken jwt = tokenHandler.ReadJwtToken(tokenData.AccessToken);
             
-            var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value;
+            var idAuth0 = jwt.Claims.FirstOrDefault(r => r.Type == "sub").Value.Replace("|","%7C");
 
-            UpdateUserDTO user = _userServices.UpdateUser(HttpUtility.UrlEncode(idAuth0),newUser);
+            UpdateUserDTO user = _userServices.UpdateUser(idAuth0,newUser);
 
             return Ok(user);
         }
@@ -134,9 +134,9 @@ public class UserController : ControllerBase
             {   
                 var tokenHandler = new JwtSecurityTokenHandler();
                 JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
-
+                Console.WriteLine("emaillllllsssssssssssssssss", tokenData.AccessToken);
                 string email = token.Claims.First(c => c.Type == "custom_email_claim").Value;
-            
+                
                 User userResponse = _userServices.GetUser(email);
 
                 var authorizationHeader = HttpContext.Request.Headers["Authorization"].FirstOrDefault();

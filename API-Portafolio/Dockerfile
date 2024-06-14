@@ -9,8 +9,9 @@ RUN dotnet restore
 COPY . .
 RUN dotnet publish -c Release -o out
 
-# Final stage
-FROM mcr.microsoft.com/dotnet/sdk:8.0
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS final
 WORKDIR /webapp
 COPY --from=build /webapp/out .
+
+
 ENTRYPOINT ["dotnet", "API-Portafolio.dll"]

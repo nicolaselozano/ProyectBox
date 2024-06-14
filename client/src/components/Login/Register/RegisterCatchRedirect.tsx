@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { User } from "../Profile/ProfileNav";
+import { User } from "../../Profile/ProfileNav";
 
-const CatchRedirect = (props: { code: unknown; }) => {
+const RegisterCatchRedirect = (props: { code: unknown; }) => {
     let bandera = true; 
     const [user,setUser] = useState<User | null>();
    
@@ -14,8 +14,8 @@ const CatchRedirect = (props: { code: unknown; }) => {
                 console.log(props.code);
 
                 bandera = false;
-              const response = await fetch(`http://localhost:5019/api/user/login?code=${props.code}`,{
-                method:"GET"
+              const response = await fetch(`http://localhost:5019/api/user?code=${props.code}`,{
+                method:"POST"
               });
       
               if (!response.ok) {
@@ -49,4 +49,4 @@ const CatchRedirect = (props: { code: unknown; }) => {
 
 }
 
-export default CatchRedirect;
+export default RegisterCatchRedirect;

@@ -102,7 +102,8 @@ namespace Users.Services
                 User user = new User
                 {
                     Email = newUser.Email,
-                    Name = newUser.Name
+                    Name = newUser.Name,
+                    AuthId = newUser.AuthId.Replace("|","%7C")
                 };
 
                 _context.Users.Add(user);

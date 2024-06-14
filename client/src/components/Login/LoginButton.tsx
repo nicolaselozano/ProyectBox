@@ -13,7 +13,7 @@ const LoginButton = () => {
 
     
     const handleClick = async () =>{
-
+        localStorage.clear();
         const webAuth = new auth0.WebAuth({
             domain:`${DOMAIN}`,
             clientID:`${CLIENT_ID}`

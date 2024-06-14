@@ -28,7 +28,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        
+
         services.AddRateLimiter(options =>
         {
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
