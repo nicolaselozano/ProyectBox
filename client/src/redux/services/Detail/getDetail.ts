@@ -19,7 +19,7 @@ export const getDetail = (id:string) => async (dispatch:Dispatch)  => {
 
         dispatch(setProduct({product:response.data,reviews:reviewCount}))
         dispatch(setLoading(false));
-    } catch (error) {
+    } catch (error:any) {
         dispatch(reset());
         dispatch(setLoading(false));
         dispatch(setError(error.response));

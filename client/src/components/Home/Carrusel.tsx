@@ -2,7 +2,7 @@
 import { getAllProducts, resetAllProducts } from "@/redux/services/getAllProducts";
 import { AppDispatch, useAppSelector } from "@/redux/store";
 import { Carousel, CustomFlowbiteTheme } from "flowbite-react";
-import { useEffect, useState } from "react";
+import { Key, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import Item from "../Proyects/Item/Item";
 import { Product } from "../Proyects/AllItems/AllItems";
@@ -17,7 +17,7 @@ const customTheme: CustomFlowbiteTheme["carousel"] = {
 
 const Carrusel = () => {
 
-    const {allProduct, error} = useAppSelector((state) => state.productReducer)
+    const {allProduct, error}:{error:any|{status:any},allProduct:any} = useAppSelector((state) => state.productReducer)
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
@@ -37,7 +37,7 @@ const Carrusel = () => {
     <div className="mt-4 h-56 sm:h-64 xl:h-80 2xl:h-96">
       <Carousel theme={customTheme}>
         {
-          allProduct.length ? allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:Product,key) => 
+          allProduct.length ? allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:Product,key: Key) => 
           <div key={key} className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
             <a href={proyect.url} target="_blank">
               <Item proyect={proyect}/>

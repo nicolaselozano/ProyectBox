@@ -11,7 +11,7 @@ import Item from "../Proyects/Item/Item";
 
 const HomePage = () => {
 
-    const [mostVP,setMostVP] = useState();
+    const [mostVP,setMostVP] = useState<any>();
 
     useEffect(() => {
         

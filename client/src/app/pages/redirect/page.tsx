@@ -2,9 +2,9 @@
 import CatchRedirect from "@/components/Login/CatchRedirect";
 import RegisterCatchRedirect from "@/components/Login/Register/RegisterCatchRedirect";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
-const RedirectLogin = () => {
+const RedirectLoginPage = () => {
 
     const [tokenExist,setTokenExist] = useState(0);
     const code = useSearchParams().get("code");
@@ -39,4 +39,10 @@ const RedirectLogin = () => {
 
 }
 
-export default RedirectLogin;
+export default function RedirectLogin() {
+    return (
+      <Suspense fallback={<div>Loading...</div>}>
+        <RedirectLoginPage />
+      </Suspense>
+    );
+  }

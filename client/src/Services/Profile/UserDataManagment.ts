@@ -13,6 +13,7 @@ export interface IUData{
     id:UUID
     name:string
     userProyects?: UserProyect[];
+    rol?:any
 }
 
 export interface IUserLikes{
@@ -68,7 +69,7 @@ export const editUser = async (data:IUData) => {
         console.log(response.data);
         return data;
 
-    } catch (error) {
+    } catch (error:any) {
         console.error('Bad request: ' + error.response.data);
     }
 

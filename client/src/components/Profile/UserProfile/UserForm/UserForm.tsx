@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import styles from "./UserForm.module.css";
 import { editUser, IUData } from "@/Services/Profile/UserDataManagment";
+import { UUID } from "crypto";
 
 const UserForm = () => {
     
     const [formData,setFormData] = useState<IUData>({
         email:"",
-        id:"",
+        id:"" as UUID,
         name:""
     });
 
@@ -15,7 +16,7 @@ const UserForm = () => {
 
     },[])
 
-    const handleSubmit = async (event) => {
+    const handleSubmit = async (event:any) => {
         event.preventDefault();
         try {
             await editUser(formData);

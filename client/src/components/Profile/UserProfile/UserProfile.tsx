@@ -33,7 +33,7 @@ const UserProfile = () => {
                 <fieldset className="border rounded-lg">
                     <legend>Tus favoritos</legend>
                     {
-                        userLikes?.proyects ? userLikes.proyects.map((proyect,key) => 
+                        userLikes?.proyects ? userLikes.proyects.map((proyect:any,key) => 
                             <div className={`bg-cards_bg rounded-md p-2 m-2`}key={key}>
                                 <h1>{proyect?.name}</h1>
                                 <h1>Rol : {proyect?.role}</h1>

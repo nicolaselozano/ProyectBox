@@ -14,7 +14,7 @@ export const getAllProducts = async (dispatch:Dispatch) =>  {
         dispatch(setError({}))
         dispatch(addProduct(response.data));  
 
-    } catch (error) {
+    } catch (error:any) {
         dispatch(setLoadingFalse());
         dispatch(setError(error.response));
         console.error('Error al tomar los Proyectos del Usuario'+error);

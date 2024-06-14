@@ -16,8 +16,8 @@ interface IId {
 
 const CDetail = ({id}:IId) => {
 
-    const {product,reviews,loading}:{product:Product | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
-    const {error}:any= useAppSelector(state => state.reviewReducer);
+    const {product,reviews,loading}:{product:Product | any | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
+    const {error}:{error:any|{status:any}}= useAppSelector(state => state.reviewReducer);
 
     const [actualR, setActualR] = useState(reviews);
 
@@ -54,7 +54,7 @@ const CDetail = ({id}:IId) => {
         setActualR(reviews);
         console.log(error);
         if(error?.status == 429) alert("Se hicieron muchas request");
-    },[dispatch,error?.status])
+    },[dispatch,error.status])
 
     useEffect(() => {
         
@@ -76,12 +76,12 @@ const CDetail = ({id}:IId) => {
             return ;
         }
         if (buttonStatus === 1) {
-            setActualR(prev => prev - 1); 
+            setActualR(prev => prev? - 1 :0); 
             setButtonStatus(0);
             dispatch(setReviews(id, email, false));
 
         } else {
-            setActualR(prev => prev + 1);
+            setActualR(prev => prev? + 1:0);
             setButtonStatus(1);
             dispatch(setReviews(id, email, true));
         }
