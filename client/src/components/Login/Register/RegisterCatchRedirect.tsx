@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { User } from "../../Profile/ProfileNav";
 
+import { API_ENDPOINT } from "../../../../vars";
+
 const RegisterCatchRedirect = (props: { code: unknown; }) => {
     let bandera = true; 
     const [user,setUser] = useState<User | null>();
@@ -14,7 +16,7 @@ const RegisterCatchRedirect = (props: { code: unknown; }) => {
                 console.log(props.code);
 
                 bandera = false;
-              const response = await fetch(`http://localhost:5019/api/user?code=${props.code}`,{
+              const response = await fetch(`${API_ENDPOINT}/user?code=${props.code}`,{
                 method:"POST"
               });
       
