@@ -31,7 +31,9 @@ const ProfileNav = () => {
             {user ? 
                 <div className="flex-col items-center justify-center ml-5">
                     <h1>Bienvenido {user?.name}</h1> 
-                    <Button_Nav to="/pages/Profile">Profile</Button_Nav>
+                    <div className="ml-3 -mt-3">
+                        <Button_Nav to="/pages/Profile">Perfil</Button_Nav>
+                    </div>
                 </div>: null}
         </div>
     )
