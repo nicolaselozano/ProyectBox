@@ -18,7 +18,7 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <link rel="stylesheet" href="../output.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" />
-        <title>{metadata.title}</title>
+        <title>ProyectBox</title>
         <meta name="description" content={metadata.description} />
       </head>
       <body className="font-russo  text-white

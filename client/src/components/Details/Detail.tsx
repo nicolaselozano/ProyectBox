@@ -19,7 +19,7 @@ const CDetail = ({id}:IId) => {
     const {product,reviews,loading}:{product:Product | any | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
     const {error}:{error:any|{status:any}}= useAppSelector(state => state.reviewReducer);
 
-    const [actualR, setActualR] = useState(reviews);
+    const [actualR, setActualR] = useState<any>(reviews);
 
     const dispatch = useDispatch<AppDispatch>();
     
@@ -76,12 +76,12 @@ const CDetail = ({id}:IId) => {
             return ;
         }
         if (buttonStatus === 1) {
-            setActualR(prev => prev? - 1 :0); 
+            setActualR((prev: any) => prev - 1); 
             setButtonStatus(0);
             dispatch(setReviews(id, email, false));
 
         } else {
-            setActualR(prev => prev? + 1:0);
+            setActualR((prev: any) => prev + 1);
             setButtonStatus(1);
             dispatch(setReviews(id, email, true));
         }
