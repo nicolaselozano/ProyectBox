@@ -191,7 +191,7 @@ namespace Reviews.Services
             try
             {
                 int skip = (page - 1) * pageSize;
-                var response = _context.Review.Where(r => r.User.Id == userId && !r.isDeleted)
+                var response = _context.Review.Where(r => r.User.Id == userId && !r.isDeleted && r.Like)
                 .Skip(skip)
                 .Take(pageSize)
                 .Include(r => r.Proyect)
