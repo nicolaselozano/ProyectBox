@@ -33,7 +33,7 @@ const HomePage = () => {
             <div className={`${style.container__dialog_text} text-violet_text`}>
                 <h1>Conoce mis Proyectos</h1>
                 <p>En esta web podras ver todos mis proyectos con sus detalles,  
-                    tecnologias, desafios y aprendizajes que hice a travez del proceso de los mismos
+                    tecnologias, desafios y aprendizajes que hice a través del proceso de los mismos
                 </p>
             </div>
             <div className={style.container__pet}>

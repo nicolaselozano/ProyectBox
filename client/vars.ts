@@ -6,5 +6,6 @@ export const SCOPE = 'offline_access';
 export const CLIENT_ID = 'FiGgFZqBNRTXMtroNlRxerrS9FEwWca8';
 export const RESPONSE_TYPE = 'code';
 // export const REDIRECT_URI = "http://localhost:3000";
+// export const REDIRECT_URI = "http://localhost:4000";
 export const REDIRECT_URI = "https://proyectbox-au5d.onrender.com";
 export const API_ENDPOINT = "https://proyectbox.onrender.com/api";
