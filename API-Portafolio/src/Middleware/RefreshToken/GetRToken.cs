@@ -13,6 +13,7 @@ namespace MiddlewarePBox
                 Console.WriteLine(code);
                 var CLIEN_ID = configuration.GetSection("AUTH")["CLIEN_ID"];
                 var CLIENT_SECRET = configuration.GetSection("AUTH")["CLIENT_SECRET"];
+                var CLIENT_HOST = configuration.GetSection("AUTH")["CLIEN_HOST"];
 
                 var httpClient = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post,"https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
@@ -26,7 +27,7 @@ namespace MiddlewarePBox
                     new KeyValuePair<string, string>("client_id", $"{CLIEN_ID}"),
                     new KeyValuePair<string, string>("client_secret", $"{CLIENT_SECRET}"),
                     new KeyValuePair<string, string>("code", $"{code}"),
-                    new KeyValuePair<string, string>("redirect_uri", "http://localhost:3000/callback"),
+                    new KeyValuePair<string, string>("redirect_uri", $"{CLIENT_HOST}/pages/redirect"),
                 };
 
                 request.Content = new FormUrlEncodedContent(formData);
@@ -39,9 +40,9 @@ namespace MiddlewarePBox
                 Console.WriteLine($"ANTES RT {refreshToken.RefreshToken}");
                 return refreshToken;
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                
+                Console.WriteLine(ex);
                 throw;
             }
         }
@@ -69,6 +70,7 @@ namespace MiddlewarePBox
             {
                 var CLIEN_ID = configuration.GetSection("AUTH")["CLIEN_ID"];
                 var CLIENT_SECRET = configuration.GetSection("AUTH")["CLIENT_SECRET"];
+                var CLIENT_HOST = configuration.GetSection("AUTH")["CLIEN_HOST"];
 
                 var httpClient = new HttpClient();
                 var request = new HttpRequestMessage(HttpMethod.Post,"https://dev-v2roygalmy6qyix2.us.auth0.com/oauth/token");
@@ -80,7 +82,7 @@ namespace MiddlewarePBox
                     new KeyValuePair<string, string>("client_id", $"{CLIEN_ID}"),
                     new KeyValuePair<string, string>("client_secret", $"{CLIENT_SECRET}"),
                     new KeyValuePair<string, string>("refresh_token", $"{refreshToken}"),
-                    new KeyValuePair<string, string>("redirect_uri", "http://localhost:3000/callback"),
+                    new KeyValuePair<string, string>("redirect_uri", $"{CLIENT_HOST}/pages/redirect"),
                 };
 
                 request.Content = new FormUrlEncodedContent(formData);
@@ -94,9 +96,9 @@ namespace MiddlewarePBox
                 return token;
 
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                
+                Console.WriteLine(ex);
                 throw;
             }
         }
