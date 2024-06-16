@@ -37,7 +37,7 @@ public class Startup
                 factory: partition => new FixedWindowRateLimiterOptions
                 {
                     AutoReplenishment = true,
-                    PermitLimit = 40,
+                    PermitLimit = 50,
                     QueueLimit = 0,
                     Window = TimeSpan.FromMinutes(1)
                 })
