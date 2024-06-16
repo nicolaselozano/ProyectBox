@@ -124,7 +124,7 @@ namespace Reviews.Services
             try
             {
 
-                Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
+                Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
 
                 if (reviewExist == null) {
                     throw new Exception("Error no se encontro");

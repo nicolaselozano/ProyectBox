@@ -23,70 +23,68 @@ const CDetail = ({id}:IId) => {
 
     const dispatch = useDispatch<AppDispatch>();
     
-    const [buttonStatus,setButtonStatus] = useState(0)
-
+    const [buttonStatus,setButtonStatus] = useState(0);
+    
     useEffect(() => {
-        const fetchData = async () => {
-          const email = localStorage.getItem("email");
-          dispatch(getDetail(id));
-    
-          const getLikeCountUser = async () => {
-            const response = await getProyectReview(id, email);
-    
-            if (response) {
-              setButtonStatus(1);
-              setActualR(reviews);
-              handleLikeButton();
-            } else {
-              setButtonStatus(0);
-            }
-          };
-    
-          await getLikeCountUser();
-        };
-    
-        fetchData();
+
+        dispatch(getDetail(id));
     
         return () => {
-          dispatch(resetDetail);
+            dispatch(resetDetail);
         };
-      }, [dispatch, id]);
+
+    }, [dispatch, id]);
 
     useEffect(() => {
-        console.log(error);
-        if(error?.status == 429) alert("Se hicieron muchas request");
-    },[dispatch,error.status])
+        if (error?.status === 429) alert("Se hicieron muchas request");
+    }, [error]);
 
     useEffect(() => {
-        
-        const getLikeCountUser = async () => {
-            if(actualR != reviews && buttonStatus === 1) setActualR(reviews);
-        }
+        const fetchLikeCount = async () => {
+          const email = localStorage.getItem("email");
+            if (email && !loading) {
+                try {
 
-        getLikeCountUser();
+                    const response = await getProyectReview(id, email);
+            
+                    if (response) {
+                        setButtonStatus(1);
+                        setActualR(reviews);
+                    } else if (response === false) {
+                        setButtonStatus(0);
+                    } else {
+                        setButtonStatus(-1);
+                    }
 
-    },[actualR,loading,dispatch])
+                setActualR(reviews);
+                } catch (error) {
+                        console.error("Error fetching like count:", error);
+                        setButtonStatus(-1);
+                }
+            }
+        };
+    
+        fetchLikeCount();
 
+    }, [id, loading]);
+    
     const handleLikeButton = () => {
 
-        if(!localStorage.getItem("token")) return alert("inicie sesion para poder dar me gusta")      
+        if (!localStorage.getItem("token")) return alert("Inicie sesión para poder dar me gusta");
 
         const email = localStorage.getItem("email");
-        
-        if (buttonStatus === -1) {
-            return ;
-        }
+
         if (buttonStatus === 1) {
-            setActualR((prev: any) => prev - 1); 
+            setActualR((prev: any) => prev - 1);
             setButtonStatus(0);
             dispatch(setReviews(id, email, false));
-
-        } else {
+        } else if (buttonStatus === 0) {
             setActualR((prev: any) => prev + 1);
             setButtonStatus(1);
             dispatch(setReviews(id, email, true));
+        } else {
+            setActualR(reviews);
         }
-
     };
 
     return (
@@ -105,7 +103,7 @@ const CDetail = ({id}:IId) => {
                         <span className="sr-only">Icon description</span>
                     </button>
 
-                    <span className="ml-5">{actualR ? actualR : reviews}</span>
+                    <span className="ml-5">{actualR ? actualR :reviews}</span>
 
                 </div>
                 <Item proyect={product as Product} />
