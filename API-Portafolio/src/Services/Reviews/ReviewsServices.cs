@@ -123,15 +123,17 @@ namespace Reviews.Services
         {
             try
             {
+
                 Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
 
-                if (reviewExist == null) throw new Exception("Error no se encontro");
+                if (reviewExist == null) {
+                    throw new Exception("Error no se encontro");
+                }
 
-                bool review = _context.Review
-                    .Any(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
-
+                bool review = _context.Review.Any(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId && r.Like == true);
 
                 Console.WriteLine($"Review: {review}");
+
                 if (review == null)
                 {
                     return review;
@@ -170,7 +172,7 @@ namespace Reviews.Services
         {
             try
             {
-                
+
                 Review review = _context.Review.First(r => r.User.Id == UId && r.Proyect.Id == PId);
 
                 review.isDeleted = !review.isDeleted;

@@ -26,32 +26,33 @@ const CDetail = ({id}:IId) => {
     const [buttonStatus,setButtonStatus] = useState(0)
 
     useEffect(() => {
-        
-        const email = localStorage.getItem("email");
-        
-        dispatch(getDetail(id));
-
-        const getLikeCountUser = async () => {
-            
-            const response = await getProyectReview(id,email);
-
-            if(response){
-                setButtonStatus(1);
-                setActualR(reviews);
-                handleLikeButton();
-            } else setButtonStatus(0);
-        }
-        
-        getLikeCountUser();
-
-        return () => {
-            dispatch(resetDetail);
+        const fetchData = async () => {
+          const email = localStorage.getItem("email");
+          dispatch(getDetail(id));
+    
+          const getLikeCountUser = async () => {
+            const response = await getProyectReview(id, email);
+    
+            if (response) {
+              setButtonStatus(1);
+              setActualR(reviews);
+              handleLikeButton();
+            } else {
+              setButtonStatus(0);
+            }
+          };
+    
+          await getLikeCountUser();
         };
-
-    },[dispatch,id]); 
+    
+        fetchData();
+    
+        return () => {
+          dispatch(resetDetail);
+        };
+      }, [dispatch, id]);
 
     useEffect(() => {
-        setActualR(reviews);
         console.log(error);
         if(error?.status == 429) alert("Se hicieron muchas request");
     },[dispatch,error.status])
@@ -59,12 +60,12 @@ const CDetail = ({id}:IId) => {
     useEffect(() => {
         
         const getLikeCountUser = async () => {
-            if(actualR == null) setActualR(reviews);
+            if(actualR != reviews && buttonStatus === 1) setActualR(reviews);
         }
 
         getLikeCountUser();
 
-    },[reviews,loading,dispatch])
+    },[actualR,loading,dispatch])
 
     const handleLikeButton = () => {
 
@@ -104,7 +105,7 @@ const CDetail = ({id}:IId) => {
                         <span className="sr-only">Icon description</span>
                     </button>
 
-                    <span className="ml-5">{actualR ? actualR : 0}</span>
+                    <span className="ml-5">{actualR ? actualR : reviews}</span>
 
                 </div>
                 <Item proyect={product as Product} />
