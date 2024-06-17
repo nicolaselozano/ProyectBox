@@ -53,7 +53,7 @@ const CDetail = ({id}:IId) => {
                     } else if (response === false) {
                         setButtonStatus(0);
                     } else {
-                        setButtonStatus(-1);
+                        setButtonStatus(0);
                     }
 
                 setActualR(reviews);
