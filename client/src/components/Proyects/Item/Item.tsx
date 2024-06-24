@@ -21,11 +21,11 @@ const Item = ({proyect}:Item) => {
     return(
 
         <div className="m-4">
-            <img className={`${style.image} max-w-48`} src={image} alt={name} />
-            <div className={style.details}>
-            <h2 className="text-xl font-semibold mb-2">{name}</h2>
-            <p className="mb-2">Url : {url}</p>
-            <p className="">Role : {role}</p>
+            <img className={`${style.image} max-w-48 mx-auto mb-4`} src={image} alt={name} />
+            <div className="text-center">
+                <h2 className="text-2xl font-bold mb-2 text-darkPurple-200">{name}</h2>
+                <p className="text-darkPurple-300 mb-2">Url: <span className="text-darkPurple-100">{url}</span></p>
+                <p className="text-darkPurple-300">Role: <span className="text-darkPurple-100">{role}</span></p>
             </div>
         </div>
 

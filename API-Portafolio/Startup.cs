@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using Microsoft.Extensions.Caching.Memory;
 using Auth0Management;
+using Hubs;
 
 public class Startup
 {
@@ -28,6 +29,9 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        
+        //websocket
+        services.AddSignalR();
 
         services.AddRateLimiter(options =>
         {
@@ -109,9 +113,6 @@ public class Startup
         {
             options.JsonSerializerOptions.ReferenceHandler = null;
         });
-        // AWS S3
-        // services.AddAWSService<IAmazonS3>();
-
 
 
     }
@@ -136,6 +137,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
+            endpoints.MapHub<NotificationsHub>("notifications-hub");
         });
     }
 }

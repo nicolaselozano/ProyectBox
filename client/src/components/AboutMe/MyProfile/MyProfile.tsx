@@ -102,11 +102,10 @@ const MyProfile = () => {
                     <h1 className="text-center font-semibold text-4xl text-violet_text">Algunos Proyectos personales y otros en los que he participado</h1>
 
                     <div className="m-5">
-                        { allProduct.length ? 
-                        allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:IProject,key) => 
+                        {allProduct.length ? 
+                            allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:IProject,key) => 
                             <a href={proyect.url} className="" target="_blank" key={key}>
-                                <div className={`m-5 bg-cards_bg 
-                                border border-solid border-profile_border border-4 rounded-md`}>
+                                <div className={`m-5 bg-cards_bg border border-solid border-profile_border rounded-md`}>
                                     <div className="flex flex-col justify-around">
                                         <Item proyect={proyect as Product} />
                                         <ImagesProyect imgs={proyect.imgs}/>

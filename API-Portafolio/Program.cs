@@ -13,11 +13,6 @@ public class Program
     {
         var host = CreateHostBuilder(args).Build();
 
-        // Probando AWS S3
-        var bucketName = "";
-        var key = "archivo.txt";
-        var content = "Hola, esto es un archivo de prueba.";
-
         using (var scope = host.Services.CreateScope())
         {
             var services = scope.ServiceProvider;
