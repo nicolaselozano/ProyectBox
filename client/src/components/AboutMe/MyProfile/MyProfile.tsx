@@ -81,20 +81,21 @@ const MyProfile = () => {
                 <div 
                 ref={welcomingRef}
                 className={`mb-24 ${style.container__welcoming} transition-opacity duration-1000 ${welcomingInView ? 'opacity-100' : 'opacity-0'}`}>
-                    <div className="m-32">
-                        <div className={style.container__welcoming_pet}>
-                            <img src={imgPet.src} alt="" />
-                        </div>
+                    <div className="flex-col m-32">
                         <h1  className={`${style.container__welcoming_txt}`}>
                             {currentTime ? currentTime : "Buenas"} 
                         </h1>
                         <h1 className={`${style.container__welcoming_name}`}>Soy Nicolas Lozano</h1>
                         <h1 className={`${style.container__welcoming_txt}`}>Espero que estes teniendo un lindo {currentDay ? currentDay : "dia"} 
                         </h1>
+
+                        <div className={style.container__welcoming_pet}>
+                            <img src={imgPet.src} alt="" />
+                        </div>
                     </div>
                 </div>
 
-                {/* Algunos de mis proyectos */}
+                {/* Lista de proyectos */}
                 <div 
                 ref={projectsRef}
                 className={`mb-36 transition-opacity duration-1000 ${projectsInView ? 'opacity-100' : 'opacity-0'}`}>

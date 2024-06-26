@@ -25,16 +25,17 @@ const RootLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       min-h-screen bg-gradient-to-b from-general_bg to-cards_bg
       ">
         <NavBar />
-          <div className={style.container}>
+          <div className={`${style.container}`}>
 
             <ReduxProvider>
               {children}
               <LightAnimation/>
             </ReduxProvider>
 
-            <Footer/>
             
           </div>
+          
+          <Footer/>
       </body>
     </html>
   );

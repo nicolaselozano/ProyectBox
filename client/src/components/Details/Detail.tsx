@@ -19,75 +19,73 @@ const CDetail = ({id}:IId) => {
     const {product,reviews,loading}:{product:Product | any | {},reviews:number | null, loading:boolean} = useAppSelector(state => state.detailReducer);
     const {error}:{error:any|{status:any}}= useAppSelector(state => state.reviewReducer);
 
-    const [actualR, setActualR] = useState(reviews);
+    const [actualR, setActualR] = useState<any>(reviews);
 
     const dispatch = useDispatch<AppDispatch>();
     
-    const [buttonStatus,setButtonStatus] = useState(0)
-
+    const [buttonStatus,setButtonStatus] = useState(0);
+    
     useEffect(() => {
-        
-        const email = localStorage.getItem("email");
-        
+
         dispatch(getDetail(id));
-
-        const getLikeCountUser = async () => {
-            
-            const response = await getProyectReview(id,email);
-
-            if(response){
-                setButtonStatus(1);
-                setActualR(reviews);
-                handleLikeButton();
-            } else setButtonStatus(0);
-        }
-        
-        getLikeCountUser();
-
+    
         return () => {
             dispatch(resetDetail);
         };
 
-    },[dispatch,id]); 
+    }, [dispatch, id]);
 
     useEffect(() => {
-        setActualR(reviews);
-        console.log(error);
-        if(error?.status == 429) alert("Se hicieron muchas request");
-    },[dispatch,error.status])
+        if (error?.status === 429) alert("Se hicieron muchas request");
+    }, [error]);
 
     useEffect(() => {
-        
-        const getLikeCountUser = async () => {
-            if(actualR == null) setActualR(reviews);
-        }
+        const fetchLikeCount = async () => {
+          const email = localStorage.getItem("email");
+            if (email && !loading) {
+                try {
 
-        getLikeCountUser();
+                    const response = await getProyectReview(id, email);
+            
+                    if (response) {
+                        setButtonStatus(1);
+                        setActualR(reviews);
+                    } else if (response === false) {
+                        setButtonStatus(0);
+                    } else {
+                        setButtonStatus(0);
+                    }
 
-    },[reviews,loading,dispatch])
+                setActualR(reviews);
+                } catch (error) {
+                        console.error("Error fetching like count:", error);
+                        setButtonStatus(-1);
+                }
+            }
+        };
+    
+        fetchLikeCount();
 
+    }, [id, loading]);
+    
     const handleLikeButton = () => {
 
-        if(!localStorage.getItem("token")) return alert("inicie sesion para poder dar me gusta")      
+        if (!localStorage.getItem("token")) return alert("Inicie sesión para poder dar me gusta");
 
         const email = localStorage.getItem("email");
-        
-        if (buttonStatus === -1) {
-            return ;
-        }
+
         if (buttonStatus === 1) {
-            setActualR(prev => prev? - 1 :0); 
+            setActualR((prev: any) => prev - 1);
             setButtonStatus(0);
             dispatch(setReviews(id, email, false));
-
-        } else {
-            setActualR(prev => prev? + 1:0);
+        } else if (buttonStatus === 0) {
+            setActualR((prev: any) => prev + 1);
             setButtonStatus(1);
             dispatch(setReviews(id, email, true));
+        } else {
+            setActualR(reviews);
         }
-
     };
-
     return (
         <div className="flex justify-center">
             {

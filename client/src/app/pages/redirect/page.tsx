@@ -20,7 +20,7 @@ const RedirectLoginPage = () => {
     },[signin])
 
     return(
-        <div>
+        <div className="flex justify-center items-center mt-20">
             {
                 tokenExist == 1 ? <div>
                     <CatchRedirect code={code}/>

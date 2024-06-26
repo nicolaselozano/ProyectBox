@@ -63,9 +63,10 @@
 
 /* Mascota */
 .container__welcoming_pet {
-    position: absolute;
+    position: relative;
+    display: flex;
     width: 10vh;
-    margin: 27vh 0 0 163vh;
+    margin: 0 0 0 50%;
     overflow: hidden;
     animation: levitante 2s ease-in-out infinite;
 }
@@ -88,7 +89,9 @@
 
 @media (max-width: 767px) {
     .container__welcoming_pet {
-        margin: 27vh 0 0 50vh;
+        position: relative;
+
+        margin: 0 0 0 40%;
     }
     .container__welcoming_name {
         font-size: 6vh;
