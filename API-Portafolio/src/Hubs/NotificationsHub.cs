@@ -6,7 +6,7 @@ public class NotificationsHub:Hub
 
     public override async Task OnConnectedAsync()
     {
-        await Clients.All.SendAsync("ReciveMessage",$"{Context.ConnectionId} has joined");
+        await Clients.All.SendAsync("ReceiveMessage",$"{Context.ConnectionId} has joined");
     }
 
 }

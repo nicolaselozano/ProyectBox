@@ -29,10 +29,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        
-        //websocket
-        services.AddSignalR();
-
         services.AddRateLimiter(options =>
         {
             options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
@@ -92,18 +88,6 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Nombre de tu API", Version = "v1" });
         });
-
-        // CORS CONFIG
-        services.AddCors(options =>
-        {
-            options.AddPolicy("AllowLocalhost3000",
-                builder =>
-                {
-                    builder.AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                }); 
-        });
         
 
         services.AddHttpContextAccessor();
@@ -114,6 +98,20 @@ public class Startup
             options.JsonSerializerOptions.ReferenceHandler = null;
         });
 
+        services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhost3000",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+        });
+        
+        //websocket
+        services.AddSignalR();
 
     }
 
@@ -122,8 +120,6 @@ public class Startup
 
         Env.Load();
 
-        app.UseCors("AllowLocalhost3000");
-
         if (env.IsDevelopment())
         {
             app.UseSwagger();
@@ -131,13 +127,16 @@ public class Startup
         }
         
         app.UseRouting();
+
+        app.UseCors("AllowLocalhost3000");
+
         app.UseAuthentication();
         app.UseAuthorization();
-        app.UseRateLimiter();
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapHub<NotificationsHub>("notifications-hub");
+            endpoints.MapHub<NotificationsHub>("/notifications-hub").RequireCors("AllowLocalhost3000");
         });
     }
 }
