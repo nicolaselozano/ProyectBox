@@ -96,7 +96,7 @@ public class UserController : ControllerBase
 
     [HttpPut]
     [TokenValidationMiddleware]
-    // [CheckPermissionM("user:user",5)]
+    [CheckPermissionM("user:user",3)]
     public IActionResult PutUser([FromBody] UpdateUserDTO newUser)
     {
         try

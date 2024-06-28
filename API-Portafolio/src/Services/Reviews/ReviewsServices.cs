@@ -14,10 +14,11 @@ namespace Reviews.Services
         Review AddReview(ReviewDTO review);
         bool GetReviewUser(Guid PId,string userEmail);
         UserLikeProductsDTO GetAllReviewsUser(Guid userId,int page, int pageSize);
+        Review GetReviewByEmail (Guid PId,string userEmail);
         Review UpdateReview(ReviewDTO review);
         int GetReviewCount(Guid PId);
         Review DeleteReview(Guid PId, Guid UId);
-        List<Review> GetProyectReviews(Guid PId,int page,int pageSize);
+        List<Review> GetProyectReviews(Guid PId, int skip = 10 ,int pageSize=10);
     }
 
     public class ReviewService:IReviewServices
@@ -75,7 +76,7 @@ namespace Reviews.Services
             }
         }
         
-        public List<Review> GetProyectReviews(Guid PId, int skip,int pageSize)
+        public List<Review> GetProyectReviews(Guid PId, int skip = 10 ,int pageSize=10)
         {
 
             try
@@ -119,6 +120,29 @@ namespace Reviews.Services
                 throw;
             }
         }
+
+        public Review GetReviewByEmail (Guid PId,string userEmail)
+        {
+            try
+            {
+                Review review = _context.Review
+                .Include(r => r.Proyect.UserProyects)
+                .FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
+
+                if (review == null) throw new Exception("Error no se encontro");
+                
+                Console.WriteLine($"Review: {review}");
+
+                return review;
+            }
+            catch (System.Exception e)
+            {
+                
+                throw new Exception("Error getting the review : ", e);
+                
+            }
+        }
+
         public bool GetReviewUser (Guid PId,string userEmail)
         {
             try
