@@ -1,9 +1,15 @@
-import { createSlice } from "@reduxjs/toolkit"
-import { error } from "console"
+import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
-const initialState:any = {
+interface INotifications{
+    actualNotifications:[]|[...any]|any
+    error:any
+    showIcon: boolean;
+} 
+
+const initialState:INotifications = {
     actualNotifications:[],
     error:{},
+    showIcon:false,
 }
 
 export const Notifications = createSlice({
@@ -13,14 +19,18 @@ export const Notifications = createSlice({
         reset:() => {
             return {
                 actualNotifications:[],
-                error:{}
+                error:{},
+                showIcon:false
             }
         },
-        setNotification:(state,action) => {
+        setNotification:(state,action:PayloadAction<[]>) => {
             state.actualNotifications = action.payload
         },
-        addNotification:(state,action) => {
-            state.actualNotifications = [...state.actualNotifications,action.payload]
+        addNotification: (state, action: PayloadAction<string>) => {
+            const notification = action.payload;
+            if (!state.actualNotifications.includes(notification)) {
+              state.actualNotifications.push(notification);
+            }
         },
         deleteNotification:(state,action) => {
             let arr = state.actualNotifications;
@@ -29,7 +39,10 @@ export const Notifications = createSlice({
         setError:(state,action) => {
             state.actualNotifications = []
             state.error = action.payload
-        }
+        },
+        setShowIcon: (state, action: PayloadAction<boolean>) => {
+            state.showIcon = action.payload;
+        },
     }    
 })
 
@@ -38,7 +51,8 @@ export const {
     setNotification,
     addNotification,
     deleteNotification,
-    setError
+    setError,
+    setShowIcon
 } = Notifications.actions;
 
 export default Notifications.reducer;

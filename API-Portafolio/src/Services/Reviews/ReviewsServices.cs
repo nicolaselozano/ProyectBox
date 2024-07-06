@@ -1,11 +1,14 @@
 
 using ApplicationDb.Models;
+using Hubs;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using Proyects.Models;
 using Reviews.Model;
 using Users.Models;
+using Notification.Services;
 
 namespace Reviews.Services
 {
@@ -24,12 +27,24 @@ namespace Reviews.Services
     public class ReviewService:IReviewServices
     {
         private readonly ApplicationDbContext _context;
+        private readonly NClientHubService _likedProyectService;
 
-        public ReviewService(ApplicationDbContext context)
+        public ReviewService(ApplicationDbContext context,NClientHubService likedProyectService)
         {
+            _likedProyectService = likedProyectService;
             _context = context;
         }
+        private async Task NClientHubTaskAsync(string pid,string userEmail,string EUser)
+        {
+            Review review = GetReviewByEmail(Guid.Parse(pid),userEmail);
 
+            foreach (var UserP in review.Proyect.UserProyects)
+            {
+                Console.WriteLine("AAAAAAAAAAAAAAAAAA " +UserP.Proyects.Name);
+                await _likedProyectService.SendNotification(EUser,$" Tu proyecto {UserP.Proyects.Name} fue likeado por {UserP.User.Email}","",UserP.User.Email);
+                
+            }
+        }
         public Review AddReview(ReviewDTO review)
         {
 
@@ -111,6 +126,7 @@ namespace Reviews.Services
                 _context.Update(review);
                 _context.SaveChanges();
                 
+                NClientHubTaskAsync(updateReview.proyectId.ToString(),updateReview.emailUser,review.User.Email);
                 return review;
 
             }
@@ -125,14 +141,21 @@ namespace Reviews.Services
         {
             try
             {
-                Review review = _context.Review
-                .Include(r => r.Proyect.UserProyects)
-                .FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
-
+                var review = _context.Review
+                    .Include(r => r.User)
+                    .Include(r => r.Proyect)
+                        .ThenInclude(p => p.UserProyects)
+                            .ThenInclude(up => up.User)
+                    .FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
                 if (review == null) throw new Exception("Error no se encontro");
                 
                 Console.WriteLine($"Review: {review}");
+                review.Proyect.UserProyects = _context.UserProyects
+                    .Where(up => up.ProyectsId == review.Proyect.Id)
+                    .Include(up => up.User)
+                    .ToList();
 
+                
                 return review;
             }
             catch (System.Exception e)
@@ -173,7 +196,6 @@ namespace Reviews.Services
                 
             }
         }
-        
         public int GetReviewCount(Guid PId)
         {
             try
@@ -181,7 +203,7 @@ namespace Reviews.Services
                 int count = _context.Review
                 .Where(r => r.Proyect.Id == PId && !r.isDeleted && r.Like)
                 .Count();
-
+                
                 return count;
             }
             catch (System.Exception)

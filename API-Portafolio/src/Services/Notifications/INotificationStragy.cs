@@ -1,4 +1,4 @@
-public interface INotificationStragy
+public interface INotificationStrategy
 {
-    Task SendNotification(string sender,string content,string sentTime,string proyectId = null,string userEmail=null);
+    Task SendNotification(string sender,string content,string sentTime,string userEmail=null);
 }

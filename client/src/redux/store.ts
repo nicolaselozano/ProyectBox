@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import productReducer from "./slices/Product";
 import detailReducer from "./slices/Detail";
 import reviewReducer from "./slices/Reviews";
-import notificationsReducer from "./slices/Reviews";
+import notificationsReducer from "./slices/Notifications";
 import {thunk} from 'redux-thunk';
 import { TypedUseSelectorHook, useSelector } from 'react-redux';
 

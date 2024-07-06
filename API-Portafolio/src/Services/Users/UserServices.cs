@@ -1,6 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Web;
 using ApplicationDb.Models;
+using Notification.Services;
 using Proyects.Models;
 using UserProyects.Models;
 using Users.Models;
@@ -16,7 +17,7 @@ namespace Users.Services
         UpdateUserDTO UpdateUser(string AuthId,UpdateUserDTO user);
     }
 
-    public class UserService(ApplicationDbContext _context,IConfiguration configuration):IUserServices
+    public class UserService(ApplicationDbContext _context,IConfiguration configuration,NAllClientsHubService _NAllClientsHubService):IUserServices
     {
         public User GetUser(string email)
         {

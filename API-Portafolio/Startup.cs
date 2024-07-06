@@ -1,20 +1,17 @@
 using ApplicationDb.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Amazon.S3;
 using Proyects.Services;
 using Users.Services;
 
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.IdentityModel.Tokens;
 using Reviews.Services;
-using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
-using Microsoft.Extensions.Caching.Memory;
 using Auth0Management;
 using Hubs;
+using Notification.Services;
 
 public class Startup
 {
@@ -48,14 +45,12 @@ public class Startup
                 if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
                 {
                     await context.HttpContext.Response.WriteAsync(
-                        $"Too many requests. Please try again after {retryAfter.TotalMinutes} minute(s). " +
-                        $"Read more about our rate limits at https://example.org/docs/ratelimiting.", cancellationToken: token);
+                        $"Too many requests. Please try again after {retryAfter.TotalMinutes} minute(s). ", cancellationToken: token);
                 }
                 else
                 {
                     await context.HttpContext.Response.WriteAsync(
-                        "Too many requests. Please try again later. " +
-                        "Read more about our rate limits at https://example.org/docs/ratelimiting.", cancellationToken: token);
+                        "Too many requests. Please try again later. ", cancellationToken: token);
                 }
             };
         });
@@ -74,11 +69,15 @@ public class Startup
         services.AddTransient<IAsyncAuthorizationFilter,TokenValidationMiddleware>(); 
         services.AddTransient<IAsyncAuthorizationFilter,CheckPermissionM>();
         services.AddTransient<IRolManagement,RolManagment>();
+        services.AddTransient<NClientHubService>();
+        services.AddTransient<NAllClientsHubService>();
+        services.AddTransient<INotificationStrategy, NClientHubService>();
 
-        services.AddControllersWithViews()
-        .AddJsonOptions(options =>
+        
+
+        services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
         });
         
         services.AddDbContext<ApplicationDbContext>(opt =>
@@ -115,6 +114,27 @@ public class Startup
         
         //websocket
         services.AddSignalR();
+
+
+        //setTokenHub
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+        .AddJwtBearer(options =>
+        {
+            options.Events = new JwtBearerEvents
+            {
+                OnMessageReceived = context =>
+                {
+                    var accessToken = context.Request.Query["access_token"];
+
+                    var path = context.HttpContext.Request.Path;
+                    if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notifications-hub"))
+                    {
+                        context.Token = accessToken;
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        });
 
     }
 

@@ -1,48 +1,31 @@
-"use client"
-import { ConnectNHub } from "@/redux/services/Notifications/NotificationsHub";
-import { HubConnection } from "@microsoft/signalr";
+import { ResetNotifications } from "@/redux/services/Notifications/ThunkNotifications";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 
 const NotificationsList = () => {
 
-    
     const [actualN,setActualN] = useState<Array<any>>([]);
-    const [connection, setConnection] = useState<HubConnection | null>(null);
+    const {actualNotifications,error} = useAppSelector(state => state.notificationsReducer);
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
+      setActualN(actualNotifications);  
 
-        const connect = ConnectNHub();
-      setConnection(connect);
-      connect
-      .start()
-      .then(() => {
-        connect.on("ReceiveMessage", (sender, content, sentTime) => {
-            setActualN((prev) => [...prev, content]);      
-            console.log(sender);
-                  
-        });
-      })
-      .catch((err) =>
-        console.error("Error while connecting to SignalR Hub:", err)
-      );
-
-      return () => {
-        if (connection) {
-          connection.stop();
-          connection.off("ReceiveMessage");
-        }
-      };
-
-    },[])
+    },[dispatch]);
 
     return (
-        <div>
-            <ul>
-                { actualN.length ? actualN.map((data,key) => 
-
-                <li key={key}>{data}</li>
-
-                ):<li>Notificacion Ejemplo</li>}
+        <div className="bg-cards_bg p-4 rounded-lg shadow-md">
+            <ul className="space-y-2">
+            {actualN.length ? (
+                actualN.map((data, key) => (
+                <li key={key} className="bg-general_bg text-white p-3 rounded-md shadow-sm hover:bg-purple-800">
+                    {data}
+                </li>
+                ))
+            ) : (
+                <li className="bg-general_bg text-white p-3 rounded-md shadow-sm">No hay notificaciones</li>
+            )}
             </ul>
         </div>
     )

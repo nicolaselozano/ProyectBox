@@ -31,7 +31,7 @@ public class TokenValidationMiddleware : Attribute,IAsyncAuthorizationFilter
 
                     if (newToken != null)
                     {
-                        Console.WriteLine($"Token TOKKKKKKKKKEEEEEEEEN DATAAAAAAAAAAAAAAA {newToken.AccessToken}");
+                        Console.WriteLine($"Token {newToken.AccessToken}");
                         context.HttpContext.Items.Remove("tokenData");
                         context.HttpContext.Items.Add("tokenData",newToken);
                         context.HttpContext.Request.Headers.Add("Authorization", $"Bearer {newToken.AccessToken}");

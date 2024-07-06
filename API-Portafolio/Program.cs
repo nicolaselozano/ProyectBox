@@ -1,8 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using Amazon.S3;
-using Amazon.S3.Model;
-using Amazon.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import style from "./NotificationNav.module.css";
-import NavOptions from "../NavOptions";
 import NotificationsList from "./ListNotifications";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { setShowIcon } from "@/redux/slices/Notifications";
 
 const NotificationNav = () => {
 
     const [toggle,setTogle] = useState(false);
+    const dispatch = useDispatch<AppDispatch>();
     
     const handleDropMenu = () => {
+        dispatch(setShowIcon(false))
         setTogle(!toggle);
     }
 
     const handleMouseLeave = () => {
         setTogle(false);
     }
-
-    useEffect(() => {
-
-    },[]);
 
     return (
     <div className={style.container}>
