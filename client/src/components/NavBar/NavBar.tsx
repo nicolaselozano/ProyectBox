@@ -21,7 +21,7 @@ const NavBar = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const connect = ConnectNHub(token);
+    const connect = ConnectNHub(token || "");
     setConnection(connect);
     connect
     .start()
