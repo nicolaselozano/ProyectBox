@@ -8,4 +8,4 @@ export const RESPONSE_TYPE = 'code';
 // export const API_ENDPOINT = "http://localhost:5019/api";
 export const REDIRECT_URI = "https://proyectbox-au5d.onrender.com";
 export const API_ENDPOINT = "https://proyectbox.onrender.com/api";
-export const API_ENDPOINT_HUB = "https://proyectbox.onrender.com";
+export const API_ENDPOINT_HUB = "wss://proyectbox.onrender.com";
