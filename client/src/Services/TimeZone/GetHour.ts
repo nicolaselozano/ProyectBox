@@ -12,7 +12,8 @@ export const GetHour = () => {
 export const getDay = () => {
 
     const day = new Date().getDay();
-
+    console.log(day);
+    
     switch (day) {
 
         case 1: return "Lunes"; 
@@ -21,8 +22,8 @@ export const getDay = () => {
         case 4: return "Jueves";
         case 5: return "Viernes";
         case 6: return "Sabado";
-        case 7: return "Domingo";
-        default: return "Error getting Day";
+        case 0: return "Domingo";
+        default: return "Dia";
 
     }
 }

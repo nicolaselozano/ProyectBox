@@ -6,6 +6,20 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        darkPurple: {
+          50: '#f8f5ff',
+          100: '#ebe1ff',
+          200: '#d5baff',
+          300: '#bb8aff',
+          400: '#9e5fff',
+          500: '#7b30ff',
+          600: '#611adf',
+          700: '#4a13a6',
+          800: '#340c7b',
+          900: '#23064d',
+        },
+      },
       fontFamily: {
         'russo': ['Russo One', 'sans-serif'],
       },

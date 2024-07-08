@@ -4,6 +4,7 @@
     justify-content: space-around;
     align-items: center;
     font-weight: 600;
+    margin-top: 10vh;
     min-height: 30vh;
 }
 
@@ -13,3 +14,4 @@
 .container__imgLogo img{
     width: 20vh;
 }
+

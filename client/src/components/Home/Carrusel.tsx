@@ -34,14 +34,16 @@ const Carrusel = () => {
 
 
   return (
-    <div className="mt-4 h-56 sm:h-64 xl:h-80 2xl:h-96">
-      <Carousel theme={customTheme}>
+    <div className="mt-4 mb-24 h-full sm:h-64 xl:h-80 2xl:h-96">
+      <Carousel className="h-80" theme={customTheme}>
         {
           allProduct.length ? allProduct.slice(0, Math.min(3,allProduct.length)).map((proyect:Product,key: Key) => 
           <div key={key} className="flex h-full items-center justify-center bg-general_bg/30 dark:bg-general_bg dark:text-white">
-            <a href={proyect.url} target="_blank">
-              <Item proyect={proyect}/>
-            </a>
+            <div className="mb-14">
+              <a href={proyect.url} target="_blank">
+                  <Item proyect={proyect}/>
+              </a>
+            </div>
           </div>
           ): error?.message && error.message.length ? <h1>{error.message}</h1> : 
             <button disabled type="button" className=" w-32 text-white bg-general_bg  focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 dark:bg-general_bg inline-flex items-center">

@@ -1,11 +1,14 @@
 
 using ApplicationDb.Models;
+using Hubs;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Versioning;
 using Proyects.Models;
 using Reviews.Model;
 using Users.Models;
+using Notification.Services;
 
 namespace Reviews.Services
 {
@@ -14,21 +17,34 @@ namespace Reviews.Services
         Review AddReview(ReviewDTO review);
         bool GetReviewUser(Guid PId,string userEmail);
         UserLikeProductsDTO GetAllReviewsUser(Guid userId,int page, int pageSize);
+        Review GetReviewByEmail (Guid PId,string userEmail);
         Review UpdateReview(ReviewDTO review);
         int GetReviewCount(Guid PId);
         Review DeleteReview(Guid PId, Guid UId);
-        List<Review> GetProyectReviews(Guid PId,int page,int pageSize);
+        List<Review> GetProyectReviews(Guid PId, int skip = 10 ,int pageSize=10);
     }
 
     public class ReviewService:IReviewServices
     {
         private readonly ApplicationDbContext _context;
+        private readonly NClientHubService _likedProyectService;
 
-        public ReviewService(ApplicationDbContext context)
+        public ReviewService(ApplicationDbContext context,NClientHubService likedProyectService)
         {
+            _likedProyectService = likedProyectService;
             _context = context;
         }
+        private async Task NClientHubTaskAsync(string pid,string userEmail,string EUser)
+        {
+            Review review = GetReviewByEmail(Guid.Parse(pid),userEmail);
 
+            foreach (var UserP in review.Proyect.UserProyects)
+            {
+                Console.WriteLine("NClientHubTaskAsync : " +UserP.Proyects.Name);
+                await _likedProyectService.SendNotification(EUser,$" Tu proyecto {UserP.Proyects.Name} fue likeado por {UserP.User.Email}","",UserP.User.Email);
+                
+            }
+        }
         public Review AddReview(ReviewDTO review)
         {
 
@@ -75,7 +91,7 @@ namespace Reviews.Services
             }
         }
         
-        public List<Review> GetProyectReviews(Guid PId, int skip,int pageSize)
+        public List<Review> GetProyectReviews(Guid PId, int skip = 10 ,int pageSize=10)
         {
 
             try
@@ -110,6 +126,11 @@ namespace Reviews.Services
                 _context.Update(review);
                 _context.SaveChanges();
                 
+                if(review.Like)
+                {
+                    NClientHubTaskAsync(updateReview.proyectId.ToString(),updateReview.emailUser,review.User.Email);
+                }
+                
                 return review;
 
             }
@@ -119,10 +140,41 @@ namespace Reviews.Services
                 throw;
             }
         }
+
+        public Review GetReviewByEmail (Guid PId,string userEmail)
+        {
+            try
+            {
+                var review = _context.Review
+                    .Include(r => r.User)
+                    .Include(r => r.Proyect)
+                        .ThenInclude(p => p.UserProyects)
+                            .ThenInclude(up => up.User)
+                    .FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
+                if (review == null) throw new Exception("Error no se encontro");
+                
+                Console.WriteLine($"Review: {review}");
+                review.Proyect.UserProyects = _context.UserProyects
+                    .Where(up => up.ProyectsId == review.Proyect.Id)
+                    .Include(up => up.User)
+                    .ToList();
+
+                
+                return review;
+            }
+            catch (System.Exception e)
+            {
+                
+                throw new Exception("Error getting the review : ", e);
+                
+            }
+        }
+
         public bool GetReviewUser (Guid PId,string userEmail)
         {
             try
             {
+                Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
 
                 Review reviewExist = _context.Review.FirstOrDefault(r => !r.isDeleted && r.User.Email == userEmail && r.Proyect.Id == PId);
 
@@ -151,7 +203,6 @@ namespace Reviews.Services
                 
             }
         }
-        
         public int GetReviewCount(Guid PId)
         {
             try
@@ -159,7 +210,7 @@ namespace Reviews.Services
                 int count = _context.Review
                 .Where(r => r.Proyect.Id == PId && !r.isDeleted && r.Like)
                 .Count();
-
+                
                 return count;
             }
             catch (System.Exception)

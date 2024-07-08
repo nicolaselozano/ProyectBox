@@ -96,7 +96,7 @@ public class UserController : ControllerBase
 
     [HttpPut]
     [TokenValidationMiddleware]
-    // [CheckPermissionM("user:user",5)]
+    [CheckPermissionM("user:user",3)]
     public IActionResult PutUser([FromBody] UpdateUserDTO newUser)
     {
         try
@@ -134,7 +134,7 @@ public class UserController : ControllerBase
             {   
                 var tokenHandler = new JwtSecurityTokenHandler();
                 JwtSecurityToken token = tokenHandler.ReadJwtToken(tokenData.AccessToken);
-                Console.WriteLine("emaillllllsssssssssssssssss", tokenData.AccessToken);
+
                 string email = token.Claims.First(c => c.Type == "custom_email_claim").Value;
                 
                 User userResponse = _userServices.GetUser(email);

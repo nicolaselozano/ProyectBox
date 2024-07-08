@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { User } from "../Profile/ProfileNav";
 
 import { API_ENDPOINT } from "../../../vars";
+import Button_Nav from "../Button/Button_Nav";
 
 const CatchRedirect = (props: { code: unknown; }) => {
     let bandera = true; 
@@ -44,9 +45,16 @@ const CatchRedirect = (props: { code: unknown; }) => {
       }, [props.code]);
       
     return (
-        <div>
-          {user ? <h1>Te Logueaste con exito {user?.name}</h1> : <h1>Loading...</h1>}
+      <div className="text-center">
+        <div className="text-purple-600 bg-purple-100 p-4 rounded-md">
+          {user ? (
+            <h1 className="text-purple-900 font-bold">Te Logueaste con exito {user?.name}</h1>
+          ) : (
+            <h1 className="text-purple-700 font-medium">Loading...</h1>
+          )}
         </div>
+        {user && <Button_Nav to="/">Ir al Inicio</Button_Nav>}
+      </div>
     )
 
 }

@@ -1,5 +1,6 @@
 
 using Microsoft.AspNetCore.Mvc;
+using Notification.Services;
 using Reviews.Model;
 using Reviews.Services;
 
@@ -9,7 +10,6 @@ public class ReviewController:ControllerBase
 {
     private readonly IReviewServices _reviewService;
     private readonly IUtilitiesReviewServices _utilsService;
-
     public ReviewController(IReviewServices reviewService, IUtilitiesReviewServices utilsService)
     {
         _reviewService = reviewService;
@@ -39,7 +39,7 @@ public class ReviewController:ControllerBase
         {
 
             bool review = _reviewService.GetReviewUser(PId, userEmail);
-
+            
             return Ok(review);
 
         }
@@ -97,7 +97,7 @@ public class ReviewController:ControllerBase
 
     }
     [HttpGet("count")]
-    public IActionResult GetReviewCount ([FromQuery] Guid PId)
+    public async Task<IActionResult> GetReviewCount([FromQuery] Guid PId)
     {
         try
         {
@@ -108,7 +108,7 @@ public class ReviewController:ControllerBase
         catch (Exception ex)
         {
             Console.WriteLine($"Error al obtener todas las reviews : {ex.Message}");
-            return StatusCode(500,ex.Message);
+            return StatusCode(500, ex.Message);
         }
     }
     [HttpGet("mostv")]
