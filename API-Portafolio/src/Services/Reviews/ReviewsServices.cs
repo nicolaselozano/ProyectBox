@@ -40,7 +40,7 @@ namespace Reviews.Services
 
             foreach (var UserP in review.Proyect.UserProyects)
             {
-                Console.WriteLine("AAAAAAAAAAAAAAAAAA " +UserP.Proyects.Name);
+                Console.WriteLine("NClientHubTaskAsync : " +UserP.Proyects.Name);
                 await _likedProyectService.SendNotification(EUser,$" Tu proyecto {UserP.Proyects.Name} fue likeado por {UserP.User.Email}","",UserP.User.Email);
                 
             }
@@ -126,7 +126,11 @@ namespace Reviews.Services
                 _context.Update(review);
                 _context.SaveChanges();
                 
-                NClientHubTaskAsync(updateReview.proyectId.ToString(),updateReview.emailUser,review.User.Email);
+                if(review.Like)
+                {
+                    NClientHubTaskAsync(updateReview.proyectId.ToString(),updateReview.emailUser,review.User.Email);
+                }
+                
                 return review;
 
             }

@@ -17,6 +17,8 @@ const NavBar = () => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const dispatch = useDispatch<AppDispatch>();
 
+  const pathname = usePathname();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const connect = ConnectNHub(token);
@@ -49,7 +51,7 @@ const NavBar = () => {
       dispatch(ResetNotifications)
     };
 
-  },[dispatch])
+  },[dispatch, pathname == "/"]);
 
 
   return (
