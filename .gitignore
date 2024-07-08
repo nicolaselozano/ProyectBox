@@ -2,6 +2,7 @@
 vars.ts
 
 # Next.js
+package-lock.json
 out/
 node_modules/
 docker-compose.yml
