@@ -151,7 +151,7 @@ public class Startup
         
         app.UseRouting();
 
-        app.UseCors("AllowLocalhost3000");
+        // app.UseCors("AllowLocalhost3000");
 
         app.UseAuthentication();
         app.UseAuthorization();
@@ -159,7 +159,7 @@ public class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapHub<NotificationsHub>("/notifications-hub").RequireCors("AllowLocalhost3000");
+            endpoints.MapHub<NotificationsHub>("/notifications-hub");
         });
     }
 }
