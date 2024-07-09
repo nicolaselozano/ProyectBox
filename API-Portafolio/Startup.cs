@@ -105,7 +105,7 @@ public class Startup
             options.AddPolicy("AllowLocalhost3000",
                 builder =>
                 {
-                    builder.WithOrigins("http://localhost:3000")
+                    builder.WithOrigins("https://proyectbox-au5d.onrender.com","http://localhost:3000","https://proyectbox.onrender.com")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
                         .AllowCredentials();
@@ -156,10 +156,14 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
+        app.UseEndpoints(endpoints => 
+        {
+            endpoints.MapHub<NotificationsHub>("/notifications-hub");
+        });
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            endpoints.MapHub<NotificationsHub>("/notifications-hub").RequireCors("AllowLocalhost3000");
         });
+
     }
 }
