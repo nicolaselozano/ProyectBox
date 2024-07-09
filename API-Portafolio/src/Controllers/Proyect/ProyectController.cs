@@ -39,6 +39,8 @@ public class ProyectController : ControllerBase
 
     //Put Proyect
     [HttpPut("{id}")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult UpdateProyect(Guid id, [FromBody] Proyect UpdateP)
     {
         try
@@ -55,6 +57,8 @@ public class ProyectController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult DeleteProyect(Guid id)
     {
         
@@ -73,6 +77,8 @@ public class ProyectController : ControllerBase
 
     //ACTIVAR Proyecto 
     [HttpPut("active/{id}")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult ActiveProyect(Guid id)
     {
         try
@@ -89,6 +95,8 @@ public class ProyectController : ControllerBase
     }
 
     [HttpPost]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult AddProyect([FromBody] AddProyectRequest request)
     {
         try
@@ -106,6 +114,8 @@ public class ProyectController : ControllerBase
     }
 
     [HttpPost("many")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult AddManyProyects([FromBody] NProyectsDTO request)
     {
         try
@@ -142,8 +152,10 @@ public class ProyectController : ControllerBase
             throw;
         }
     }
-
+    
     [HttpPost("images/{id}")]
+    [TokenValidationMiddleware]
+    [CheckPermissionM("admin:user")]
     public IActionResult AddImage([FromRoute]Guid id, [FromBody] ImagesRequest request)
     {
         try
