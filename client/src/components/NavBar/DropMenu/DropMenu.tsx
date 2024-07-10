@@ -37,6 +37,11 @@ const DropMenu = () => {
         <div className={style.container}>
 
             <div className={style.options_sreen}>
+                {showIcon && (
+                    <div className="absolute top-0 right-56 mr-44 mt-4 bg-purple-600 text-white rounded-full p-1">
+                    !
+                    </div>
+                )}
                 <NavOptions/>
             </div>
 

@@ -15,7 +15,7 @@ export const getDetail = (id:string) => async (dispatch:Dispatch)  => {
 
 
 
-        console.log("aaaaaaaaaaa",reviewCount);
+        console.log("reviewCount",reviewCount);
 
         dispatch(setProduct({product:response.data,reviews:reviewCount}))
         dispatch(setLoading(false));

@@ -1,5 +1,7 @@
 #VARS.TS
 vars.ts
+#Api
+API-Portafolio/
 
 # Next.js
 package-lock.json
